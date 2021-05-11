@@ -1,6 +1,6 @@
 using System;
 using Microsoft.Data.Sqlite;
-
+using System.Collections.Generic;
 
 namespace RepositoriesAndData
 {
@@ -18,16 +18,19 @@ namespace RepositoriesAndData
             _connection.Open();
             SqliteCommand command = _connection.CreateCommand();
             command.CommandText = 
-            @"INSERT INTO comments (comment_text, author_id, post_id)
-            VALUES($comment_text, $author_id, $post_id)
+            @"INSERT INTO comments (comment_text, author_id, post_id, is_attached, created_at)
+            VALUES($comment_text, $author_id, $post_id, $is_attached, $created_at);
+            SELECT last_insert_rowid();
             ";
             command.Parameters.AddWithValue("$comment_text", comment.commentText);
             command.Parameters.AddWithValue("$author_id", comment.authorId);
             command.Parameters.AddWithValue("$post_id", comment.postId);
-            int id = (int)command.ExecuteNonQuery();
+            command.Parameters.AddWithValue("$is_attached", comment.isAttached.ToString());
+            command.Parameters.AddWithValue("$created_at", comment.createdAt.ToString());
+            long id = (long)command.ExecuteScalar();
 
             _connection.Close();
-            return id;
+            return (int)id;
         }
 
         public Comment GetById(int id)
@@ -41,8 +44,9 @@ namespace RepositoriesAndData
             Comment comment;
             if(reader.Read())
             {
-                comment = new Comment(int.Parse(reader.GetString(0)),
-                     reader.GetString(1), int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)));
+                comment = new Comment(int.Parse(reader.GetString(0)), reader.GetString(1),
+                 int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)),
+                  bool.Parse(reader.GetString(4)), DateTime.Parse(reader.GetString(5)));
             }
             else
             {
@@ -71,17 +75,56 @@ namespace RepositoriesAndData
             command.CommandText = 
             @"
             UPDATE comments
-            SET comment_text = $comment_text, author_id = $author_id, post_id = $post_id
+            SET comment_text = $comment_text, author_id = $author_id,
+            post_id = $post_id, is_attached = $is_attached
             WHERE id = $id
             ";
             command.Parameters.AddWithValue("$comment_text",comment.commentText);
             command.Parameters.AddWithValue("$author_id", comment.authorId);
             command.Parameters.AddWithValue("$id", comment.id);
             command.Parameters.AddWithValue("$post_id", comment.postId);
+            command.Parameters.AddWithValue("$is_attached", comment.isAttached.ToString());
             int changes = command.ExecuteNonQuery();
             _connection.Close();
-            return changes == 1;
+            return changes >= 1;
         }
-        
+
+        public List<Comment> GetAllUserComments(int userId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT FROM comments WHERE author_id = $author_id";
+            command.Parameters.AddWithValue($"author_id", userId);
+            SqliteDataReader reader = command.ExecuteReader();
+            List<Comment> comments = new List<Comment>();
+
+            while(reader.Read())
+            {
+                comments.Add(new Comment(int.Parse(reader.GetString(0)), reader.GetString(1),
+                 int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)), bool.Parse(reader.GetString(4)),
+                 DateTime.Parse(reader.GetString(5))));
+            }
+
+            return comments;
+        }
+
+        public List<Comment> GetAllPostComments(int postId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT FROM comments WHERE post_id = $post_id";
+            command.Parameters.AddWithValue($"post_id", postId);
+            SqliteDataReader reader = command.ExecuteReader();
+            List<Comment> comments = new List<Comment>();
+
+            while(reader.Read())
+            {
+                comments.Add(new Comment(int.Parse(reader.GetString(0)), reader.GetString(1),
+                    int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)),
+                    bool.Parse(reader.GetString(4)), DateTime.Parse(reader.GetString(5))));
+            }
+
+            return comments;
+        }
     }
 }

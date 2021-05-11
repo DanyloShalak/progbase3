@@ -18,15 +18,19 @@ namespace RepositoriesAndData
             _connection.Open();
             SqliteCommand command = _connection.CreateCommand();
             command.CommandText = 
-            @"INSERT INTO users (login, password)
-            VALUES($login, $password)
+            @"INSERT INTO users (fullname, login, password, registration_date, role)
+            VALUES($fullname , $login, $password, $registration_date, $role);
+            SELECT last_insert_rowid();
             ";
             command.Parameters.AddWithValue("$login", user.login);
             command.Parameters.AddWithValue("$password", user.password);
-            int id = (int)command.ExecuteNonQuery();
+            command.Parameters.AddWithValue("$fullname", user.fullname);
+            command.Parameters.AddWithValue("$registration_date", user.registrationDate.ToString("o"));
+            command.Parameters.AddWithValue("$role", user.role);
+            long id = (long)command.ExecuteScalar();
 
             _connection.Close();
-            return id;
+            return (int)id;
         }
 
         public User GetById(int id)
@@ -40,8 +44,8 @@ namespace RepositoriesAndData
             User user;
             if(reader.Read())
             {
-                user = new User(int.Parse(reader.GetString(0)),
-                     reader.GetString(1), reader.GetString(2));
+                user = new User(int.Parse(reader.GetString(0)), reader.GetString(1), reader.GetString(2),
+                    reader.GetString(3), DateTime.Parse(reader.GetString(4)), reader.GetString(5));
             }
             else
             {
@@ -70,15 +74,19 @@ namespace RepositoriesAndData
             command.CommandText = 
             @"
             UPDATE users
-            SET login = $login, password = $password
+            SET fullname = $fullname, login = $login, password = $password,
+            registration_date = $registration_date, role = $role
             WHERE id = $id
             ";
+            command.Parameters.AddWithValue("$fullname", user.fullname);
             command.Parameters.AddWithValue("$login", user.login);
             command.Parameters.AddWithValue("$password", user.password);
+            command.Parameters.AddWithValue("$regastration_date", user.registrationDate);
+            command.Parameters.AddWithValue("$role", user.role);
             command.Parameters.AddWithValue("$id", user.id);
             int changes = command.ExecuteNonQuery();
             _connection.Close();
-            return changes == 1;
+            return changes > 0;
         }
 
     }
