@@ -1,6 +1,7 @@
 ﻿using System;
 using RepositoriesAndData;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 
 
 namespace ConsoleProj
@@ -9,7 +10,7 @@ namespace ConsoleProj
     {
         static void Main(string[] args)
         {
-            DataGenerator.OnGeneration(5, 7, 15);
+            
         }
     }
 }

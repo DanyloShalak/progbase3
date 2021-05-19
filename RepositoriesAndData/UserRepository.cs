@@ -2,6 +2,7 @@
 using Microsoft.Data.Sqlite;
 
 
+
 namespace RepositoriesAndData
 {
     public class UsersRepository
@@ -89,5 +90,38 @@ namespace RepositoriesAndData
             return changes > 0;
         }
 
+        public User GetUserImageInformation(User user)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = 
+            @"
+            SELECT *
+            FROM posts CROSS JOIN comments
+            WHERE posts.author_id = $author_id AND posts.id = comments.post_id
+            ";
+            command.Parameters.AddWithValue("$author_id", user.id);
+            SqliteDataReader reader = command.ExecuteReader();
+
+            while(reader.Read())
+            {
+                Post post = new Post(int.Parse(reader.GetString(0)), reader.GetString(1),
+                    int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3)));
+                Comment comment = new Comment(int.Parse(reader.GetString(4)), reader.GetString(5),
+                    int.Parse(reader.GetString(6)), int.Parse(reader.GetString(7)), bool.Parse(reader.GetString(8)),
+                    DateTime.Parse(reader.GetString(9)));
+
+
+                if(user.posts.Find(x => x.id == post.id) == null)
+                {
+                    user.posts.Add(post);
+                }
+
+                Post searchedPost = user.posts.Find(x => x.id == comment.postId);
+                searchedPost.comments.Add(comment);
+            }
+
+            return user;
+        }
     }
 }

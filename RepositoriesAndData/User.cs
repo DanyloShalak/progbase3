@@ -24,6 +24,8 @@ namespace RepositoriesAndData
             this.login = login;
             this.password = password;
             this.registrationDate = registrationDate;
+            this.comments = new List<Comment>();
+            this.posts = new List<Post>();
         }
         public User(string fullname, string login, string password,
              DateTime registrationDate, string role)
@@ -33,6 +35,14 @@ namespace RepositoriesAndData
             this.password = password;
             this.registrationDate = registrationDate;
             this.role = role;
+            this.comments = new List<Comment>();
+            this.posts = new List<Post>();
+        }
+
+        public User()
+        {
+            this.comments = new List<Comment>();
+            this.posts = new List<Post>();
         }
     }
 }

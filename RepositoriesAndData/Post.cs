@@ -17,6 +17,7 @@ namespace RepositoriesAndData
             this.authorId = authorId;
             this.postText = postText;
             this.createdAt = createdAt;
+            this.comments = new List<Comment>();
         }
 
         public Post(int id, string postText, int authorId, DateTime createdAt)
@@ -25,6 +26,7 @@ namespace RepositoriesAndData
             this.postText = postText;
             this.id = id;
             this.createdAt = createdAt;
+            this.comments = new List<Comment>();
         }
     }
 }

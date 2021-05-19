@@ -87,7 +87,7 @@ namespace RepositoriesAndData
         {
             _connection.Open();
             SqliteCommand command = _connection.CreateCommand();
-            command.CommandText = @"SELECT FROM posts WHERE author_id = $author_id";
+            command.CommandText = @"SELECT * FROM posts WHERE author_id = $author_id";
             command.Parameters.AddWithValue($"author_id", userId);
             SqliteDataReader reader = command.ExecuteReader();
             List<Post> posts = new List<Post>();
