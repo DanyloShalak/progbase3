@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 
 
 
@@ -8,6 +9,7 @@ namespace RepositoriesAndData
     public class UsersRepository
     {
         private SqliteConnection _connection;
+        private int _pageSize = 12;
 
         public UsersRepository(string databaseFilePath)
         {
@@ -122,6 +124,45 @@ namespace RepositoriesAndData
             }
 
             return user;
+        }
+
+        private int GetTotalUsers()
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT COUNT(*) FROM users";
+            int result = (int)command.ExecuteScalar();
+            _connection.Close();
+            return result;
+        }
+
+        public int GetTotalPages()
+        {
+            int recorsNumb = GetTotalUsers();
+            return (int)Math.Ceiling(recorsNumb / (double)_pageSize);
+        }
+
+        public List<User> GetPage(int page)
+        {
+            List<User> users = new List<User>();
+            if(page <= GetTotalPages())
+            {
+                _connection.Open();
+                SqliteCommand command = _connection.CreateCommand();
+                command.CommandText = @"SELECT * FROM users LIMIT $pagesize OFFSET $offset";
+                command.Parameters.AddWithValue("$pagesize", _pageSize);
+                command.Parameters.AddWithValue("$offset", _pageSize * (page -1));
+                SqliteDataReader reader = command.ExecuteReader();
+
+                while(reader.Read())
+                {
+                    users.Add(new User(int.Parse(reader.GetString(0)), reader.GetString(1), reader.GetString(2),
+                        reader.GetString(3), DateTime.Parse(reader.GetString(4)), reader.GetString(5)));
+                }
+                _connection.Close();
+                reader.Close();
+            }
+            return users;
         }
     }
 }

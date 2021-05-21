@@ -7,6 +7,7 @@ namespace RepositoriesAndData
     public class PostRepository
     {
         private SqliteConnection _connection;
+        private int _pageSize = 12;
 
         public PostRepository(string databaseFilePath)
         {
@@ -50,6 +51,7 @@ namespace RepositoriesAndData
                 throw new Exception("Record do not found");
             }
             _connection.Close();
+            reader.Close();
 
             return post;
         }
@@ -97,7 +99,48 @@ namespace RepositoriesAndData
                 posts.Add(new Post(int.Parse(reader.GetString(0)), 
                     reader.GetString(1), int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3))));
             }
+            _connection.Close();
+            reader.Close();
 
+            return posts;
+        }
+
+        private int GetTotalPosts()
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT COUNT(*) FROM posts";
+            int result = (int)command.ExecuteScalar();
+            _connection.Close();
+            return result;
+        }
+
+        public int GetTotalPages()
+        {
+            int totalRecords = this.GetTotalPosts();
+            return  (int)Math.Ceiling(totalRecords / (double)_pageSize);
+        }
+        public List<Post> GetPage(int pageNumber)
+        {
+            List<Post> posts = new List<Post>();
+
+            if(pageNumber <= GetTotalPages())
+            {
+                _connection.Open();
+                SqliteCommand command = _connection.CreateCommand();
+                command.CommandText = @"SELECT * FROM posts LIMIT $pagesize OFFSET $offset";
+                command.Parameters.AddWithValue("$pagesize", _pageSize);
+                command.Parameters.AddWithValue("$offset", _pageSize*(pageNumber - 1));
+                SqliteDataReader reader = command.ExecuteReader();
+
+                while(reader.Read())
+                {
+                    posts.Add(new Post(int.Parse(reader.GetString(0)), 
+                        reader.GetString(1), int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3))));
+                }
+                _connection.Close();
+                reader.Close();
+            }
             return posts;
         }
     }

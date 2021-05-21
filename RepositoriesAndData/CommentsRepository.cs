@@ -7,6 +7,7 @@ namespace RepositoriesAndData
     public class CommentsRepository
     {
         private SqliteConnection _connection;
+        private int _pageSize = 12;
 
         public CommentsRepository(string databaseFilePath)
         {
@@ -53,6 +54,7 @@ namespace RepositoriesAndData
                 throw new Exception("Record do not found");
             }
             _connection.Close();
+            reader.Close();
 
             return comment;
         }
@@ -104,6 +106,8 @@ namespace RepositoriesAndData
                  int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)), bool.Parse(reader.GetString(4)),
                  DateTime.Parse(reader.GetString(5))));
             }
+            _connection.Close();
+            reader.Close();
 
             return comments;
         }
@@ -123,7 +127,50 @@ namespace RepositoriesAndData
                     int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)),
                     bool.Parse(reader.GetString(4)), DateTime.Parse(reader.GetString(5))));
             }
+            _connection.Close();
+            reader.Close();
 
+            return comments;
+        }
+
+        private int GetTotalComments()
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT COUNT(*) FROM comments";
+            int result = (int)command.ExecuteScalar();
+            _connection.Close();
+            return result;
+        }
+
+        public int GetTotalPages()
+        {
+            int totalComments = GetTotalComments();
+            return (int)Math.Ceiling(totalComments / (double)_pageSize);
+        }
+
+        public List<Comment> GetPage(int page)
+        {
+            List<Comment> comments = new List<Comment>();
+
+            if(page <= GetTotalPages())
+            {
+                _connection.Open();
+                SqliteCommand command = _connection.CreateCommand();
+                command.CommandText = @"SELECT * FROM comments LIMIT $pagesize OFFSET $offset";
+                command.Parameters.AddWithValue("$pagesize", _pageSize);
+                command.Parameters.AddWithValue("$offset", _pageSize * (page -1));
+                SqliteDataReader reader = command.ExecuteReader();
+
+                while(reader.Read())
+                {
+                    comments.Add(new Comment(int.Parse(reader.GetString(0)), reader.GetString(1),
+                        int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)),
+                        bool.Parse(reader.GetString(4)), DateTime.Parse(reader.GetString(5))));
+                }
+                _connection.Close();
+                reader.Close();
+            }
             return comments;
         }
     }
