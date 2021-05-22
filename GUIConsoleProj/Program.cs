@@ -15,7 +15,12 @@ namespace GUIConsoleProj
         static void Main(string[] args)
         {
             Application.Init();
-            MainWindow.OnRunMain();
+            LogInWindow log = new LogInWindow();
+            log.SetLogWindow();
+            Application.Top.Add(log);
+            Application.Run(log);
+            
+
         }
     }
 }

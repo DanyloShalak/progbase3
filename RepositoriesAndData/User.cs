@@ -44,5 +44,10 @@ namespace RepositoriesAndData
             this.comments = new List<Comment>();
             this.posts = new List<Post>();
         }
+
+        public override string ToString()
+        {
+            return $"{this.id,-7}{this.fullname,-25}{this.login,-20}{this.role}";
+        }
     }
 }

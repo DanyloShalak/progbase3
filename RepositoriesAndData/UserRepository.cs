@@ -44,11 +44,15 @@ namespace RepositoriesAndData
             command.Parameters.AddWithValue("$id", id);
             SqliteDataReader reader = command.ExecuteReader();
 
-            User user;
+            User user = new User();
             if(reader.Read())
             {
-                user = new User(int.Parse(reader.GetString(0)), reader.GetString(1), reader.GetString(2),
-                    reader.GetString(3), DateTime.Parse(reader.GetString(4)), reader.GetString(5));
+                user.id = int.Parse(reader.GetString(0));
+                user.fullname = reader.GetString(1);
+                user.login = reader.GetString(2);
+                user.password = reader.GetString(3);
+                user.registrationDate = DateTime.Parse(reader.GetString(4));
+                user.role = reader.GetString(5);
             }
             else
             {
@@ -131,9 +135,9 @@ namespace RepositoriesAndData
             _connection.Open();
             SqliteCommand command = _connection.CreateCommand();
             command.CommandText = @"SELECT COUNT(*) FROM users";
-            int result = (int)command.ExecuteScalar();
+            long result = (long)command.ExecuteScalar();
             _connection.Close();
-            return result;
+            return (int)result;
         }
 
         public int GetTotalPages()
@@ -156,13 +160,72 @@ namespace RepositoriesAndData
 
                 while(reader.Read())
                 {
-                    users.Add(new User(int.Parse(reader.GetString(0)), reader.GetString(1), reader.GetString(2),
-                        reader.GetString(3), DateTime.Parse(reader.GetString(4)), reader.GetString(5)));
+                    User user = new User();
+                    user.id = int.Parse(reader.GetString(0));
+                    user.fullname = reader.GetString(1);
+                    user.login = reader.GetString(2);
+                    user.password = reader.GetString(3);
+                    user.registrationDate = DateTime.Parse(reader.GetString(4));
+                    user.role = reader.GetString(5);
+                    users.Add(user);
                 }
                 _connection.Close();
                 reader.Close();
             }
             return users;
+        }
+
+        private User ReadUser(SqliteDataReader reader)
+        {
+            User user = new User();
+
+            if(reader.Read())
+            {
+                user.id = int.Parse(reader.GetString(0));
+                user.fullname = reader.GetString(1);
+                user.login = reader.GetString(2);
+                user.password = reader.GetString(3);
+                user.registrationDate = DateTime.Parse(reader.GetString(4));
+                user.role = reader.GetString(5);
+            }
+            return user;
+        }
+
+        public int LogUser(string login, string password)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM users WHERE login = $login";
+            command.Parameters.AddWithValue("$login", login);
+            SqliteDataReader reader = command.ExecuteReader();
+            
+
+            if(reader.Read() && reader.GetString(3) == password)
+            {
+                int id = int.Parse(reader.GetString(0));
+                _connection.Close();
+                return id;
+            }
+            _connection.Close();
+            return -1;
+        }
+
+        public bool ContainsLogin(string login)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM users WHERE login = $login";
+            command.Parameters.AddWithValue("$login", login);
+            SqliteDataReader reader = command.ExecuteReader();
+            
+
+            if(reader.Read())
+            {
+                _connection.Close();
+                return true;
+            }
+            _connection.Close();
+            return false;
         }
     }
 }

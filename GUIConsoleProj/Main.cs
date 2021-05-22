@@ -6,22 +6,31 @@ using RepositoriesAndData;
 
 namespace GUIConsoleProj
 {
-    public static class MainWindow 
+    public class Main : Window
     {
         static EntityType type = EntityType.Posts;
         static int numberOfPage = 1;
         static Label currentPage;
         public static ListView listView;
         static Label aditionalData;
+        static User loggedUser;
 
-
-        public static void OnRunMain()
+        public void FillMain(User user)
         {
-            Toplevel top = Application.Top;
-
-            Window main = new Window("MySocialNetwork");
-            top.Add(main);
-
+            this.Title = "MySocialNetwork";
+            loggedUser = user;
+            Label username = new Label(loggedUser.fullname){
+                X = Pos.Percent(80),
+                Y = Pos.Percent(3),
+                Width = Dim.Percent(20),
+            };
+            Button logOut = new Button("logOut")
+            {
+                X = username.X + 2,
+                Y = username.Y + 1,
+            };
+            logOut.Clicked += OnLogOut;
+            this.Add(username, logOut);
             //menu creation
             MenuBar menu = new MenuBar(new MenuBarItem[] {
             new MenuBarItem ("_File", new MenuItem [] {
@@ -32,8 +41,7 @@ namespace GUIConsoleProj
                 new MenuItem("_About", "", Application.RequestStop)
             }),
             });
-            top.Add(menu);  //menu created
-
+            this.Add(menu);  //menu created
 
             Window listWindow = new Window("View"){
                 X = Pos.Percent(10),
@@ -87,10 +95,7 @@ namespace GUIConsoleProj
                 Width = Dim.Percent(80),
             };
             listWindow.Add(aditionalData);
-            
-            main.Add(listWindow);
-            //Application.Run();
-            Application.Top.Add(main);
+            this.Add(listWindow);
         }
 
 
@@ -181,6 +186,14 @@ namespace GUIConsoleProj
         {
             numberOfPage += n;
             UpdateList();
+        }
+
+        static void OnLogOut()
+        {
+            Application.RequestStop();
+            LogInWindow logInWindow = new LogInWindow();
+            logInWindow.SetLogWindow();
+            Application.Run(logInWindow);
         }
     }
 }

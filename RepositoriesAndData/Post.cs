@@ -28,5 +28,15 @@ namespace RepositoriesAndData
             this.createdAt = createdAt;
             this.comments = new List<Comment>();
         }
+
+        public override string ToString()
+        {
+            string postPart = this.postText;
+            if(postPart.Length > 40)
+            {
+                postPart = postPart.Substring(0, 40) + "...";
+            }
+            return $"{this.id, -7} {postPart}";
+        }
     }
 }

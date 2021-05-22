@@ -29,5 +29,16 @@ namespace RepositoriesAndData
             this.isAttached = isAttached;
             this.createdAt = createdAt;
         }
+
+        public override string ToString()
+        {
+            string commentPart = this.commentText;
+            if(this.commentText.Length > 40)
+            {
+                commentPart = this.commentText.Substring(0, 40);
+                commentPart += "...";
+            }
+            return $"{this.id, -7} {commentPart,-28}";
+        }
     }
 }

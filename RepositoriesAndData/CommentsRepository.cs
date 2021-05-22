@@ -138,9 +138,9 @@ namespace RepositoriesAndData
             _connection.Open();
             SqliteCommand command = _connection.CreateCommand();
             command.CommandText = @"SELECT COUNT(*) FROM comments";
-            int result = (int)command.ExecuteScalar();
+            long result = (long)command.ExecuteScalar();
             _connection.Close();
-            return result;
+            return (int)result;
         }
 
         public int GetTotalPages()
