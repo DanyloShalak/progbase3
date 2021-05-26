@@ -9,23 +9,26 @@ namespace RepositoriesAndData
         public int id;
         public string postText;
         public int authorId;
+        public bool isAttached;
         public DateTime createdAt;
         public List<Comment> comments;
 
-        public Post(string postText, int authorId, DateTime createdAt)
+        public Post(string postText, int authorId, DateTime createdAt, bool isAttached)
         {
             this.authorId = authorId;
             this.postText = postText;
             this.createdAt = createdAt;
+            this.isAttached = isAttached;
             this.comments = new List<Comment>();
         }
 
-        public Post(int id, string postText, int authorId, DateTime createdAt)
+        public Post(int id, string postText, int authorId, DateTime createdAt, bool isAttached)
         {
             this.authorId = authorId;
             this.postText = postText;
             this.id = id;
             this.createdAt = createdAt;
+            this.isAttached = isAttached;
             this.comments = new List<Comment>();
         }
 

@@ -88,7 +88,7 @@ namespace RepositoriesAndData
             command.Parameters.AddWithValue("$fullname", user.fullname);
             command.Parameters.AddWithValue("$login", user.login);
             command.Parameters.AddWithValue("$password", user.password);
-            command.Parameters.AddWithValue("$regastration_date", user.registrationDate);
+            command.Parameters.AddWithValue("$registration_date", user.registrationDate);
             command.Parameters.AddWithValue("$role", user.role);
             command.Parameters.AddWithValue("$id", user.id);
             int changes = command.ExecuteNonQuery();
@@ -111,10 +111,10 @@ namespace RepositoriesAndData
 
             while(reader.Read())
             {
-                Post post = new Post(int.Parse(reader.GetString(0)), reader.GetString(1),
-                    int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3)));
+                Post post = new Post(int.Parse(reader.GetString(0)), reader.GetString(1), int.Parse(reader.GetString(2)),
+                    DateTime.Parse(reader.GetString(3)), bool.Parse(reader.GetString(4)));
                 Comment comment = new Comment(int.Parse(reader.GetString(4)), reader.GetString(5),
-                    int.Parse(reader.GetString(6)), int.Parse(reader.GetString(7)), bool.Parse(reader.GetString(8)),
+                    int.Parse(reader.GetString(6)), int.Parse(reader.GetString(7)),
                     DateTime.Parse(reader.GetString(9)));
 
 
@@ -226,6 +226,23 @@ namespace RepositoriesAndData
             }
             _connection.Close();
             return false;
+        }
+
+        public string GetFullNameById(int id)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM users WHERE id = $id";
+            command.Parameters.AddWithValue("$id", id);
+            string userFullName = "";
+            SqliteDataReader reader = command.ExecuteReader();
+
+            if(reader.Read())
+            {
+                userFullName = reader.GetString(1);
+            }
+            _connection.Close();
+            return userFullName;
         }
     }
 }

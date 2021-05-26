@@ -7,10 +7,10 @@ namespace GUIConsoleProj
 {
     public class RegistrationWindow : Dialog
     {
-        static TextField login;
-        static TextField fullname;
-        static TextField password;
-        static Label errorLb;
+        private TextField login;
+        private TextField fullname;
+        private TextField password;
+        private Label errorLb;
         
         public  void FillRegistrationWindow()
         {
@@ -18,26 +18,26 @@ namespace GUIConsoleProj
             this.Width = Dim.Percent(50);
             this.Height = Dim.Percent(40);
 
-            login = new TextField("login"){
+            this.login = new TextField("login"){
                 X = Pos.Percent(25),
                 Y = Pos.Percent(30),
                 Width = Dim.Percent(30),
             };
 
-            fullname = new TextField("fullname"){
+            this.fullname = new TextField("fullname"){
                 X = Pos.Percent(25),
                 Y = login.Y + 2,
                 Width = Dim.Percent(30),
             };
 
-            password = new TextField("password"){
+            this.password = new TextField("password"){
                 X = Pos.Percent(25),
                 Y = fullname.Y + 2,
                 Width = Dim.Percent(30),
             };
-            password.Secret = true;
+            this.password.Secret = true;
 
-            errorLb = new Label(" "){
+            this.errorLb = new Label(" "){
                 X = Pos.Percent(10),
                 Y = Pos.Percent(85),
                 Width = Dim.Percent(80),
@@ -60,18 +60,18 @@ namespace GUIConsoleProj
 
         }
 
-        static void OnRegistration()
+        void OnRegistration()
         {
-            if(Program.usersRepository.ContainsLogin(login.Text.ToString()))
+            if(Program.usersRepository.ContainsLogin(this.login.Text.ToString()))
             {
-                errorLb.Text = $"User with login '{login.Text}' exists";
+                this.errorLb.Text = $"User with login '{this.login.Text}' exists";
             }
             else
             {
                 User user = new User();
-                user.login = login.Text.ToString();
-                user.fullname = fullname.Text.ToString();
-                user.password = password.Text.ToString();
+                user.login = this.login.Text.ToString();
+                user.fullname = this.fullname.Text.ToString();
+                user.password = this.password.Text.ToString();
                 user.registrationDate = DateTime.Now;
                 user.role = "user";
                 user.id = Program.usersRepository.Add(user);
@@ -79,18 +79,5 @@ namespace GUIConsoleProj
             }
         }
 
-        static void CloseAndRunMain()
-        {
-            User user = new User();
-            user.login = login.Text.ToString();
-            user.fullname = fullname.Text.ToString();
-            user.password = password.Text.ToString();
-            user.registrationDate = DateTime.Now;
-            user.role = "user";
-            user.id = Program.usersRepository.Add(user);
-            LogInWindow.RunMain(user);
-        }
-
-        
     }
 }

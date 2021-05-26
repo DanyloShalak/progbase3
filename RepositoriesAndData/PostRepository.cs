@@ -19,13 +19,14 @@ namespace RepositoriesAndData
             _connection.Open();
             SqliteCommand command = _connection.CreateCommand();
             command.CommandText = 
-            @"INSERT INTO posts (post_text, author_id, created_at)
-            VALUES($post_text, $author_id, $created_at);
+            @"INSERT INTO posts (post_text, author_id, created_at, is_attached)
+            VALUES($post_text, $author_id, $created_at, $is_attached);
             SELECT last_insert_rowid();
             ";
             command.Parameters.AddWithValue("$post_text", post.postText);
             command.Parameters.AddWithValue("$author_id", post.authorId);
             command.Parameters.AddWithValue("$created_at", post.createdAt.ToString());
+            command.Parameters.AddWithValue("$is_attached", post.isAttached.ToString());
             long id = (long)command.ExecuteScalar();
 
             _connection.Close();
@@ -44,7 +45,8 @@ namespace RepositoriesAndData
             if(reader.Read())
             {
                 post = new Post(int.Parse(reader.GetString(0)), reader.GetString(1),
-                     int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3)));
+                     int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3)),
+                     bool.Parse(reader.GetString(4)));
             }
             else
             {
@@ -74,12 +76,13 @@ namespace RepositoriesAndData
             command.CommandText = 
             @"
             UPDATE posts
-            SET post_text = $post_text, author_id = $author_id
+            SET post_text = $post_text, author_id = $author_id, is_attached = $is_attached
             WHERE id = $id
             ";
             command.Parameters.AddWithValue("$post_text",post.postText);
             command.Parameters.AddWithValue("$author_id", post.authorId);
             command.Parameters.AddWithValue("$id", post.id);
+            command.Parameters.AddWithValue("$is_attached", post.isAttached.ToString());
             int changes = command.ExecuteNonQuery();
             _connection.Close();
             return changes == 1;
@@ -97,7 +100,8 @@ namespace RepositoriesAndData
             while(reader.Read())
             {
                 posts.Add(new Post(int.Parse(reader.GetString(0)), 
-                    reader.GetString(1), int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3))));
+                    reader.GetString(1), int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3)),
+                    bool.Parse(reader.GetString(4))));
             }
             _connection.Close();
             reader.Close();
@@ -136,7 +140,8 @@ namespace RepositoriesAndData
                 while(reader.Read())
                 {
                     posts.Add(new Post(int.Parse(reader.GetString(0)), 
-                        reader.GetString(1), int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3))));
+                        reader.GetString(1), int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3)),
+                        bool.Parse(reader.GetString(4))));
                 }
                 _connection.Close();
                 reader.Close();

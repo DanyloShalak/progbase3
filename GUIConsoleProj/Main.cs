@@ -13,13 +13,19 @@ namespace GUIConsoleProj
         static Label currentPage;
         public static ListView listView;
         static Label aditionalData;
-        static User loggedUser;
+        static public  User loggedUser;
+        public static Label username;
+        private EntityType searchType = EntityType.Posts;
+        
+        public Main(User user)
+        {
+            loggedUser = user;
+        }
 
-        public void FillMain(User user)
+        public void FillMain()
         {
             this.Title = "MySocialNetwork";
-            loggedUser = user;
-            Label username = new Label(loggedUser.fullname){
+            username = new Label(loggedUser.fullname){
                 X = Pos.Percent(80),
                 Y = Pos.Percent(3),
                 Width = Dim.Percent(20),
@@ -44,7 +50,7 @@ namespace GUIConsoleProj
             this.Add(menu);  //menu created
 
             Window listWindow = new Window("View"){
-                X = Pos.Percent(10),
+                X = Pos.Percent(5),
                 Y = Pos.Percent(10),
                 Width = Dim.Percent(60),
                 Height = Dim.Percent(80),
@@ -79,6 +85,7 @@ namespace GUIConsoleProj
                 Height = Dim.Percent(60),
                 Width = Dim.Percent(90),
             };
+            listView.OpenSelectedItem += OnSelectedItem;
             listWindow.Add(listView);
 
             //radiogroup to switch between lists
@@ -96,6 +103,35 @@ namespace GUIConsoleProj
             };
             listWindow.Add(aditionalData);
             this.Add(listWindow);
+
+            Button newPost = new Button("New Post"){
+                X = Pos.Percent(77),
+                Y = Pos.Percent(30),
+            };
+            newPost.Clicked += OnNewPost;
+            this.Add(newPost);
+
+            TextField searchField = new TextField()
+            {
+                X = Pos.Percent(75),
+                Y = Pos.Percent(45),
+                Width = Dim.Percent(20),
+            };
+            
+
+            RadioGroup searchRadio = new RadioGroup(new NStack.ustring[]{"Posts", "Comments", "Users"}){
+                X = Pos.Percent(75),
+                Y = Pos.Percent(50),
+            };
+
+            Button search = new Button("search")
+            {
+                X = Pos.Percent(78),
+                Y = Pos.Percent(60),
+            };
+
+            this.Add(searchField, searchRadio, search);
+
         }
 
 
@@ -123,7 +159,7 @@ namespace GUIConsoleProj
             }
         }
 
-        static void UpdateList()
+        public static void UpdateList()
         {
             (string, int) tuple = ("", 0);
             if(type == EntityType.Posts)
@@ -194,6 +230,38 @@ namespace GUIConsoleProj
             LogInWindow logInWindow = new LogInWindow();
             logInWindow.SetLogWindow();
             Application.Run(logInWindow);
+        }
+
+        static void OnNewPost()
+        {
+            NewPostWindow newPostWindow = new NewPostWindow();
+            newPostWindow.SetNewPostWindow();
+            Application.Run(newPostWindow);
+        }
+
+        static void OnSelectedItem(ListViewItemEventArgs args)
+        {
+            if(type == EntityType.Posts)
+            {
+                Post post = (Post)args.Value;
+                PostView postView = new PostView(post);
+                postView.SetUpdatePostWindow(loggedUser.id, loggedUser.role, false);
+                Application.Run(postView);
+            }
+            else if(type == EntityType.Comments)
+            {
+                Comment comment = (Comment)args.Value;
+                CommentView commentView = new CommentView(comment);
+                commentView.SetUpdateCommentWindow(loggedUser.id, loggedUser.role, false);
+                Application.Run(commentView);
+            }
+            else if(type == EntityType.Users)
+            {
+                User user = (User)args.Value;
+                UserView userView = new UserView(user);
+                userView.SetUserWindow();
+                Application.Run(userView);
+            }
         }
     }
 }

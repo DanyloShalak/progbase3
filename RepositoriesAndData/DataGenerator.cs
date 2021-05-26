@@ -114,7 +114,7 @@ namespace RepositoriesAndData
             for(int i = 0; i < postsCount; i++)
             {
                 posts.Add(new Post(postsText[random.Next(0, postsText.Count)],
-                     usersId[random.Next(0, usersId.Count)], GenerateDate()));
+                     usersId[random.Next(0, usersId.Count)], GenerateDate(), false));
             }
 
             return posts;
@@ -143,8 +143,8 @@ namespace RepositoriesAndData
             for(int i = 0; i < commentsCount; i++)
             {
                 comments.Add(new Comment(commentText[random.Next(0, commentText.Count)],
-                    usersId[random.Next(0 , usersId.Count)],postId[random.Next(0 , postId.Count)],
-                    false, GenerateDate()));
+                    usersId[random.Next(0 , usersId.Count)],postId[random.Next(0 , postId.Count)]
+                    , GenerateDate()));
             }
 
             return comments;

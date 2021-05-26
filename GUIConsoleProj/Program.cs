@@ -12,15 +12,13 @@ namespace GUIConsoleProj
              new PostRepository("C:/Users/Данило/progbase3/data/database.db");
         public static CommentsRepository commentsRepository =
              new CommentsRepository("C:/Users/Данило/progbase3/data/database.db");
+        
         static void Main(string[] args)
         {
             Application.Init();
             LogInWindow log = new LogInWindow();
             log.SetLogWindow();
-            Application.Top.Add(log);
             Application.Run(log);
-            
-
         }
     }
 }

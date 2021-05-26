@@ -7,9 +7,9 @@ namespace GUIConsoleProj
 {
     public class LogInWindow : Window
     {
-        static TextField login;
-        static TextField password;
-        static Label logState;
+        private TextField login;
+        private TextField password;
+        private Label logState;
         public void SetLogWindow()
         {
             this.Title = "LogWindow";
@@ -18,7 +18,7 @@ namespace GUIConsoleProj
                 Y = Pos.Percent(35),
             };
 
-            login = new TextField(""){
+            this.login = new TextField(""){
                 X = Pos.Percent(35),
                 Y = Pos.Percent(45),
                 Width = Dim.Percent(30),
@@ -28,12 +28,12 @@ namespace GUIConsoleProj
                 Y = login.Y - 1,
             };
 
-            password = new TextField(""){
+            this.password = new TextField(""){
                 X = Pos.Percent(35),
                 Y = login.Y + 3,
                 Width = Dim.Percent(30),
             };
-            password.Secret = true;
+            this.password.Secret = true;
             Label passLable = new Label("Password:"){
                 X = password.X,
                 Y = password.Y - 1,
@@ -57,7 +57,7 @@ namespace GUIConsoleProj
             };
             registrate.Clicked += OnRegistration;
 
-            logState = new Label(" "){
+            this.logState = new Label(" "){
                 X = Pos.Percent(30),
                 Y = Pos.Percent(80),
                 Width = Dim.Percent(70),
@@ -68,13 +68,13 @@ namespace GUIConsoleProj
 
         public  static void RunMain(User user)
         {
-            Main main = new Main();
+            Main main = new Main(user);
             Application.RequestStop();
-            main.FillMain(user);
+            main.FillMain();
             Application.Run(main);
         }
 
-        static void OnLogButton()
+         void OnLogButton()
         {
             int id = Program.usersRepository.LogUser(login.Text.ToString(), password.Text.ToString());
             if(id != -1)
@@ -83,7 +83,7 @@ namespace GUIConsoleProj
             }
             else
             {
-                logState.Text = "Incorrect entered login or password";
+                this.logState.Text = "Incorrect entered login or password";
             }
         }
 

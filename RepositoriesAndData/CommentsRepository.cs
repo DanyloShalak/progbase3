@@ -19,14 +19,13 @@ namespace RepositoriesAndData
             _connection.Open();
             SqliteCommand command = _connection.CreateCommand();
             command.CommandText = 
-            @"INSERT INTO comments (comment_text, author_id, post_id, is_attached, created_at)
-            VALUES($comment_text, $author_id, $post_id, $is_attached, $created_at);
+            @"INSERT INTO comments (comment_text, author_id, post_id, created_at)
+            VALUES($comment_text, $author_id, $post_id, $created_at);
             SELECT last_insert_rowid();
             ";
             command.Parameters.AddWithValue("$comment_text", comment.commentText);
             command.Parameters.AddWithValue("$author_id", comment.authorId);
             command.Parameters.AddWithValue("$post_id", comment.postId);
-            command.Parameters.AddWithValue("$is_attached", comment.isAttached.ToString());
             command.Parameters.AddWithValue("$created_at", comment.createdAt.ToString());
             long id = (long)command.ExecuteScalar();
 
@@ -47,7 +46,7 @@ namespace RepositoriesAndData
             {
                 comment = new Comment(int.Parse(reader.GetString(0)), reader.GetString(1),
                  int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)),
-                  bool.Parse(reader.GetString(4)), DateTime.Parse(reader.GetString(5)));
+                  DateTime.Parse(reader.GetString(4)));
             }
             else
             {
@@ -77,15 +76,13 @@ namespace RepositoriesAndData
             command.CommandText = 
             @"
             UPDATE comments
-            SET comment_text = $comment_text, author_id = $author_id,
-            post_id = $post_id, is_attached = $is_attached
+            SET comment_text = $comment_text, author_id = $author_id, post_id = $post_id
             WHERE id = $id
             ";
             command.Parameters.AddWithValue("$comment_text",comment.commentText);
             command.Parameters.AddWithValue("$author_id", comment.authorId);
             command.Parameters.AddWithValue("$id", comment.id);
             command.Parameters.AddWithValue("$post_id", comment.postId);
-            command.Parameters.AddWithValue("$is_attached", comment.isAttached.ToString());
             int changes = command.ExecuteNonQuery();
             _connection.Close();
             return changes >= 1;
@@ -103,8 +100,8 @@ namespace RepositoriesAndData
             while(reader.Read())
             {
                 comments.Add(new Comment(int.Parse(reader.GetString(0)), reader.GetString(1),
-                 int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)), bool.Parse(reader.GetString(4)),
-                 DateTime.Parse(reader.GetString(5))));
+                 int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)),
+                 DateTime.Parse(reader.GetString(4))));
             }
             _connection.Close();
             reader.Close();
@@ -116,7 +113,7 @@ namespace RepositoriesAndData
         {
             _connection.Open();
             SqliteCommand command = _connection.CreateCommand();
-            command.CommandText = @"SELECT FROM comments WHERE post_id = $post_id";
+            command.CommandText = @"SELECT * FROM comments WHERE post_id = $post_id";
             command.Parameters.AddWithValue($"post_id", postId);
             SqliteDataReader reader = command.ExecuteReader();
             List<Comment> comments = new List<Comment>();
@@ -125,7 +122,7 @@ namespace RepositoriesAndData
             {
                 comments.Add(new Comment(int.Parse(reader.GetString(0)), reader.GetString(1),
                     int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)),
-                    bool.Parse(reader.GetString(4)), DateTime.Parse(reader.GetString(5))));
+                     DateTime.Parse(reader.GetString(4))));
             }
             _connection.Close();
             reader.Close();
@@ -166,12 +163,23 @@ namespace RepositoriesAndData
                 {
                     comments.Add(new Comment(int.Parse(reader.GetString(0)), reader.GetString(1),
                         int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)),
-                        bool.Parse(reader.GetString(4)), DateTime.Parse(reader.GetString(5))));
+                         DateTime.Parse(reader.GetString(4))));
                 }
                 _connection.Close();
                 reader.Close();
             }
             return comments;
+        }
+
+        public long DeleteAllPostComments(int deletedPostId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"DELETE FROM comments WHERE post_id = $post_id";
+            command.Parameters.AddWithValue("$post_id", deletedPostId);
+            long changes = command.ExecuteNonQuery();
+            _connection.Close();
+            return changes;
         }
     }
 }
