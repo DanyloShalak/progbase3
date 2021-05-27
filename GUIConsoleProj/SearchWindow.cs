@@ -6,13 +6,16 @@ namespace GUIConsoleProj
     public class SearchWindow : Dialog
     {
         private EntityType type;
-        private string searchText;
-        public SearchWindow(EntityType type, string searchText)
+        private string searchParameter;
+        public SearchWindow(EntityType type, string searchParameter)
         {
             this.type = type;
-            this.searchText = searchText;
+            this.searchParameter = searchParameter;
         }
 
-
+        public void SetSearchDialog()
+        {
+            
+        }
     }
 }

@@ -9,7 +9,6 @@ namespace GUIConsoleProj
     public class PostView : Dialog
     {
         private bool isEditing = false;
-        private bool isInView;
         private TextField postText;
         private CheckBox isAttach;
         public static Post updatePost;

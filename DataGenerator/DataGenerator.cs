@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 
 
-namespace RepositoriesAndData
+namespace DataGenerator
 {
     public static class DataGenerator
     {

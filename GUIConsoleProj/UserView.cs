@@ -115,6 +115,14 @@ namespace GUIConsoleProj
 
             this.Add(role, registarationDate, login, fullname, back, fullnameLabel, loginLabel, errorLabel, postsView);
 
+
+            Button exportBtn = new Button("export")
+            {
+                X = back.X,
+                Y = back.Y - 4,
+            };
+            exportBtn.Clicked += OnExport;
+            this.Add(exportBtn);
         }
 
         void OnUpdateButton()
@@ -122,6 +130,7 @@ namespace GUIConsoleProj
             this.isUpdating = true;
             this.Remove(delete);
             this.Remove(update);
+            this.Remove(postsView);
             this.login.ReadOnly = false;
             this.fullname.ReadOnly = false;
 
@@ -163,7 +172,7 @@ namespace GUIConsoleProj
                 this.Remove(this.pass);
                 this.login.ReadOnly = true;
                 this.fullname.ReadOnly = true;
-                this.Add(delete, update);
+                this.Add(delete, update, postsView);
                 this.login.Text = updateUser.login;
                 this.fullname.Text = updateUser.fullname;
                 this.errorLabel.Text = "";
@@ -182,7 +191,7 @@ namespace GUIConsoleProj
                 this.Remove(saveChanges);
                 this.Remove(pass);
                 this.Remove(password);
-                this.Add(delete, update);
+                this.Add(delete, update, postsView);
 
                 if(password.Text.ToString().Length != 0)
                 {
@@ -205,6 +214,13 @@ namespace GUIConsoleProj
             PostView postWindow = new PostView(post);
             postWindow.SetUpdatePostWindow(Main.loggedUser.id, Main.loggedUser.role, true);
             Application.Run(postWindow);
+        }
+
+        void OnExport()
+        {
+            ExportWindow export = new ExportWindow(this.updateUser);
+            export.SetExportWindow();
+            Application.Run(export);
         }
     }
 }

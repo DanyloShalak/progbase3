@@ -1,7 +1,9 @@
 using System;
+using System.Xml.Serialization;
 
 namespace RepositoriesAndData
 {
+    [XmlType(TypeName="course")]
     public class Comment
     {
         public int id;
@@ -17,6 +19,11 @@ namespace RepositoriesAndData
             this.authorId = authorId;
             this.postId = postId;
             this.createdAt = createdAt;
+        }
+
+        public Comment()
+        {
+            
         }
 
         public Comment(string commentText, int authorId, int postId, DateTime createdAt)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using RepositoriesAndData;
 
 
+
 namespace GUIConsoleProj
 {
     public class Main : Window
@@ -41,7 +42,7 @@ namespace GUIConsoleProj
             MenuBar menu = new MenuBar(new MenuBarItem[] {
             new MenuBarItem ("_File", new MenuItem [] {
                new MenuItem ("_Quit", "", Application.RequestStop),
-                new MenuItem("_New...", "", Application.RequestStop)
+                new MenuItem("_Import", "", OnImportWindow)
                 }),
             new MenuBarItem("Help", new MenuItem[]{
                 new MenuItem("_About", "", Application.RequestStop)
@@ -262,6 +263,13 @@ namespace GUIConsoleProj
                 userView.SetUserWindow();
                 Application.Run(userView);
             }
+        }
+
+        void OnImportWindow()
+        {
+            ImportWindow importWindow = new ImportWindow();
+            importWindow.SetImportWindow();
+            Application.Run(importWindow);
         }
     }
 }

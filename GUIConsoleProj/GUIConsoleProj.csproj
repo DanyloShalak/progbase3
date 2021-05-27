@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RepositoriesAndData\RepositoriesAndData.csproj" />
+    <ProjectReference Include="..\XMLModule\XMLModule.csproj" />
   </ItemGroup>
 
 </Project>
