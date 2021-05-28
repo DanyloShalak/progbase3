@@ -148,5 +148,16 @@ namespace RepositoriesAndData
             }
             return posts;
         }
+
+        public long DeleteAllUserPosts(int userId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"DELETE FROM posts WHERE author_id = $author_id";
+            command.Parameters.AddWithValue("$author_id", userId);
+            long changes = command.ExecuteNonQuery();
+            _connection.Close();
+            return changes;
+        }
     }
 }

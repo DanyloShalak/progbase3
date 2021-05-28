@@ -181,5 +181,16 @@ namespace RepositoriesAndData
             _connection.Close();
             return changes;
         }
+
+        public long DeleteAllUserComments(int userId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"DELETE FROM comments WHERE author_id = $author_id";
+            command.Parameters.AddWithValue("$author_id", userId);
+            long changes = command.ExecuteNonQuery();
+            _connection.Close();
+            return changes;
+        }
     }
 }

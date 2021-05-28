@@ -16,7 +16,7 @@ namespace GUIConsoleProj
         static void Main(string[] args)
         {
             Application.Init();
-            LogInWindow log = new LogInWindow();
+            LogInWindow log = new LogInWindow("C:/Users/Данило/progbase3/data/database.db");
             log.SetLogWindow();
             Application.Run(log);
         }

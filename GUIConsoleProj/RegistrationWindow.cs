@@ -1,6 +1,7 @@
 using System;
 using Terminal.Gui;
 using RepositoriesAndData;
+using Autentification;
 
 
 namespace GUIConsoleProj
@@ -11,6 +12,12 @@ namespace GUIConsoleProj
         private TextField fullname;
         private TextField password;
         private Label errorLb;
+        private Autentificator autentificator;
+
+        public RegistrationWindow(Autentificator autentificator)
+        {
+            this.autentificator = autentificator;
+        }
         
         public  void FillRegistrationWindow()
         {
@@ -62,20 +69,27 @@ namespace GUIConsoleProj
 
         void OnRegistration()
         {
-            if(Program.usersRepository.ContainsLogin(this.login.Text.ToString()))
+            if(this.fullname.Text != "" || this.password.Text != "")
             {
-                this.errorLb.Text = $"User with login '{this.login.Text}' exists";
+                if(this.autentificator.ContainsLogin(this.login.ToString()))
+                {
+                    this.errorLb.Text = $"User with login '{this.login.Text}' exists";
+                }
+                else
+                {
+                    User user = new User();
+                    user.login = this.login.Text.ToString();
+                    user.fullname = this.fullname.Text.ToString();
+                    user.password = Hasher.GetHashedPassword(this.password.Text.ToString());
+                    user.registrationDate = DateTime.Now;
+                    user.role = "user";
+                    user.id = Program.usersRepository.Add(user);
+                    Application.RequestStop();
+                }
             }
             else
             {
-                User user = new User();
-                user.login = this.login.Text.ToString();
-                user.fullname = this.fullname.Text.ToString();
-                user.password = this.password.Text.ToString();
-                user.registrationDate = DateTime.Now;
-                user.role = "user";
-                user.id = Program.usersRepository.Add(user);
-                Application.RequestStop();
+                this.errorLb.Text = "Entered not all data";
             }
         }
 

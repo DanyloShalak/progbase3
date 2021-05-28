@@ -1,6 +1,8 @@
 using System;
 using Terminal.Gui;
 using RepositoriesAndData;
+using Autentification;
+using System.Collections.Generic;
 
 namespace GUIConsoleProj
 {
@@ -101,6 +103,7 @@ namespace GUIConsoleProj
                     X = this.update.X,
                     Y = this.update.Y + 3,
                 };
+                this.delete.Clicked += OnDelete;
                 this.Add(delete);
             }
 
@@ -195,7 +198,7 @@ namespace GUIConsoleProj
 
                 if(password.Text.ToString().Length != 0)
                 {
-                    this.updateUser.password = this.password.Text.ToString();
+                    this.updateUser.password = Hasher.GetHashedPassword(this.password.Text.ToString());
                 }
 
                 this.updateUser.login = this.login.Text.ToString();
@@ -221,6 +224,24 @@ namespace GUIConsoleProj
             ExportWindow export = new ExportWindow(this.updateUser);
             export.SetExportWindow();
             Application.Run(export);
+        }
+
+        void OnDelete()
+        {
+            int resultButtonIndex = MessageBox.Query("Delete user", "Are you sure?", "No", "Yes");
+            if(resultButtonIndex == 1)
+            {
+                List<Post> posts = Program.postRepository.GetAllUserPosts(this.updateUser.id);
+                foreach(Post post in posts)
+                {
+                    Program.commentsRepository.DeleteAllPostComments(post.id);
+                }
+                Program.commentsRepository.DeleteAllUserComments(this.updateUser.id);
+                Program.postRepository.DeleteAllUserPosts(this.updateUser.id);
+                Program.usersRepository.RemoveById(this.updateUser.id);
+                int deletedUser = this.updateUser.id;
+                Application.RequestStop();
+            }
         }
     }
 }

@@ -225,10 +225,10 @@ namespace GUIConsoleProj
             UpdateList();
         }
 
-        static void OnLogOut()
+         public static void OnLogOut()
         {
             Application.RequestStop();
-            LogInWindow logInWindow = new LogInWindow();
+            LogInWindow logInWindow = new LogInWindow("C:/Users/Данило/progbase3/data/database.db");
             logInWindow.SetLogWindow();
             Application.Run(logInWindow);
         }

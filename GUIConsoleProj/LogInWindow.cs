@@ -1,6 +1,7 @@
 using System;
 using Terminal.Gui;
 using RepositoriesAndData;
+using Autentification;
 
 
 namespace GUIConsoleProj
@@ -10,6 +11,11 @@ namespace GUIConsoleProj
         private TextField login;
         private TextField password;
         private Label logState;
+        private Autentificator autentificator;
+        public LogInWindow(string dbFilePath)
+        {
+            this.autentificator = new Autentificator(dbFilePath);
+        }
         public void SetLogWindow()
         {
             this.Title = "LogWindow";
@@ -76,20 +82,27 @@ namespace GUIConsoleProj
 
          void OnLogButton()
         {
-            int id = Program.usersRepository.LogUser(login.Text.ToString(), password.Text.ToString());
-            if(id != -1)
+            if(this.login.Text != "" || this.password.Text != "")
             {
-                RunMain(Program.usersRepository.GetById(id));
+                User user = autentificator.VerifyUser(this.login.Text.ToString(), this.password.Text.ToString());
+                if(user != null)
+                {
+                    RunMain(user);
+                }
+                else
+                {
+                    this.logState.Text = "Incorrect entered login or password";
+                }
             }
             else
             {
-                this.logState.Text = "Incorrect entered login or password";
+                this.logState.Text = "Entered not all data";
             }
         }
 
-        static void OnRegistration()
+         void OnRegistration()
         {
-            RegistrationWindow registrationWindow = new RegistrationWindow();
+            RegistrationWindow registrationWindow = new RegistrationWindow(this.autentificator);
             registrationWindow.FillRegistrationWindow();
             Application.Run(registrationWindow);
         }

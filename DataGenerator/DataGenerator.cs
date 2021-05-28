@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using Autentification;
+using RepositoriesAndData;
 
 
 namespace DataGenerator
@@ -46,7 +48,7 @@ namespace DataGenerator
             StreamReader reader = new StreamReader(filePath);
             List<string> data = new List<string>();
             string str = "";
-
+            
             while(true)
             {
                 str = reader.ReadLine();
@@ -81,7 +83,8 @@ namespace DataGenerator
             for(int i = 0; i < usersCount; i++)
             {
                 users.Add(new User(names[random.Next(0, names.Count)], logins[i],
-                     passwords[random.Next(0, passwords.Count)], GenerateDate(), "user"));
+                    Hasher.GetHashedPassword(passwords[random.Next(0, passwords.Count)]),
+                    GenerateDate(), "user"));
             }
 
             for(int i = 0; i < moderatorCount; i++)
