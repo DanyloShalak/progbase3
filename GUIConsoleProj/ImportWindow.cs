@@ -11,11 +11,6 @@ namespace GUIConsoleProj
         private TextField filePathTextField;
         private Label errorsMesage;
 
-        public ImportWindow()
-        {
-
-        }
-
         public void SetImportWindow()
         {
             this.Title = "Import";
@@ -84,15 +79,22 @@ namespace GUIConsoleProj
             if(this.filePathTextField.Text != "")
             {
                 XML xml = new XML();
-                List<Comment> comments = new List<Comment>();
+                List<Post> posts = new List<Post>();
 
                 try
                 {
-                    comments = xml.Deserialise(this.filePathTextField.Text.ToString());
-
-                    foreach(Comment comment in comments)
+                    posts = xml.Deserialise(this.filePathTextField.Text.ToString());
+                    int existingAuthor = Main.loggedUser.id;
+                    foreach(Post post in posts)
                     {
-                        Program.commentsRepository.Add(comment);
+                        if(Program.postRepository.ContainsRecord(post.id))
+                        {
+                            if(!Program.usersRepository.ContainsRecord(post.authorId))
+                            {
+                                post.authorId = existingAuthor;
+                            }
+                            Program.postRepository.Add(post);
+                        }
                     }
                     Application.RequestStop();
                     Main.UpdateList();

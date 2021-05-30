@@ -98,7 +98,7 @@ namespace GUIConsoleProj
         {
             if(this.fileNameTextField.Text != "" && this.filePathTextField.Text != "")
             {
-                XML xml = new XML(Program.commentsRepository);
+                XML xml = new XML(Program.postRepository);
                 xml.Serialise(this.user, this.filePathTextField.Text.ToString() + "\\" + this.fileNameTextField.Text.ToString());
                 Application.RequestStop();
             }

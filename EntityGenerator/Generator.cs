@@ -5,9 +5,9 @@ using Autentification;
 using RepositoriesAndData;
 
 
-namespace DataGenerator
+namespace EntityGenerator
 {
-    public static class DataGenerator
+    public static class Generator
     {
         private static DateTime GenerateDate()
         {

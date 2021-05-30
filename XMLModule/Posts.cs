@@ -6,14 +6,14 @@ using System.Xml.Serialization;
 namespace XMLModule
 {
     [XmlRoot("root")]
-    public class Comments
+    public class Posts
     {
-        [XmlElement("comment")]
-        public List<Comment> comments;
+        [XmlElement("post")]
+        public List<Post> posts;
 
-        public Comments()
+        public Posts()
         {
-            this.comments = new List<Comment>();
+            this.posts = new List<Post>();
         }
     }
 }

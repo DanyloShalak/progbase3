@@ -159,5 +159,23 @@ namespace RepositoriesAndData
             _connection.Close();
             return changes;
         }
+
+        public bool ContainsRecord(int recordId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM posts WHERE id = $id";
+            command.Parameters.AddWithValue("$id", recordId);
+            SqliteDataReader reader = command.ExecuteReader();
+
+            if(reader.Read())
+            {
+                _connection.Close();
+                return true;
+            }
+
+            _connection.Close();
+            return false;
+        }
     }
 }

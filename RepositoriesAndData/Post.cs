@@ -32,6 +32,11 @@ namespace RepositoriesAndData
             this.comments = new List<Comment>();
         }
 
+        public Post()
+        {
+            this.comments = new List<Comment>();
+        }
+
         public override string ToString()
         {
             string postPart = this.postText;

@@ -125,7 +125,23 @@ namespace GUIConsoleProj
                 Y = back.Y - 4,
             };
             exportBtn.Clicked += OnExport;
-            this.Add(exportBtn);
+
+            Button report = new Button("report")
+            {
+                X = exportBtn.X,
+                Y = exportBtn.Y + 2,
+            };
+            report.Clicked += OnReportButton;
+
+            this.Add(exportBtn, report);
+        }
+
+        void OnReportButton()
+        {
+            this.updateUser = Program.usersRepository.GetUserImageInformation(updateUser);
+            ReportWindow reportWindow = new ReportWindow(this.updateUser);
+            reportWindow.SetReportWindow();
+            Application.Run(reportWindow);
         }
 
         void OnUpdateButton()

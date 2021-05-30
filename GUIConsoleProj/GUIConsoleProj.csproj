@@ -14,6 +14,7 @@
     <ProjectReference Include="..\RepositoriesAndData\RepositoriesAndData.csproj" />
     <ProjectReference Include="..\XMLModule\XMLModule.csproj" />
     <ProjectReference Include="..\Autentification\Autentification.csproj" />
+    <ProjectReference Include="..\FileGeneration\FileGeneration.csproj" />
   </ItemGroup>
 
 </Project>

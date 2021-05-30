@@ -47,12 +47,7 @@ namespace RepositoriesAndData
             User user = new User();
             if(reader.Read())
             {
-                user.id = int.Parse(reader.GetString(0));
-                user.fullname = reader.GetString(1);
-                user.login = reader.GetString(2);
-                user.password = reader.GetString(3);
-                user.registrationDate = DateTime.Parse(reader.GetString(4));
-                user.role = reader.GetString(5);
+                user = this.ReadUser(reader);
             }
             else
             {
@@ -111,10 +106,11 @@ namespace RepositoriesAndData
 
             while(reader.Read())
             {
-                Post post = new Post(int.Parse(reader.GetString(0)), reader.GetString(1), int.Parse(reader.GetString(2)),
-                    DateTime.Parse(reader.GetString(3)), bool.Parse(reader.GetString(4)));
-                Comment comment = new Comment(int.Parse(reader.GetString(4)), reader.GetString(5),
-                    int.Parse(reader.GetString(6)), int.Parse(reader.GetString(7)),
+                Post post = new Post(int.Parse(reader.GetString(0)), reader.GetString(1),
+                    int.Parse(reader.GetString(2)),DateTime.Parse(reader.GetString(3)), 
+                    bool.Parse(reader.GetString(4)));
+                Comment comment = new Comment(int.Parse(reader.GetString(5)), reader.GetString(6),
+                    int.Parse(reader.GetString(7)), int.Parse(reader.GetString(8)),
                     DateTime.Parse(reader.GetString(9)));
 
 
@@ -160,13 +156,7 @@ namespace RepositoriesAndData
 
                 while(reader.Read())
                 {
-                    User user = new User();
-                    user.id = int.Parse(reader.GetString(0));
-                    user.fullname = reader.GetString(1);
-                    user.login = reader.GetString(2);
-                    user.password = reader.GetString(3);
-                    user.registrationDate = DateTime.Parse(reader.GetString(4));
-                    user.role = reader.GetString(5);
+                    User user = ReadUser(reader);
                     users.Add(user);
                 }
                 _connection.Close();
@@ -178,36 +168,13 @@ namespace RepositoriesAndData
         private User ReadUser(SqliteDataReader reader)
         {
             User user = new User();
-
-            if(reader.Read())
-            {
-                user.id = int.Parse(reader.GetString(0));
-                user.fullname = reader.GetString(1);
-                user.login = reader.GetString(2);
-                user.password = reader.GetString(3);
-                user.registrationDate = DateTime.Parse(reader.GetString(4));
-                user.role = reader.GetString(5);
-            }
+            user.id = int.Parse(reader.GetString(0));
+            user.fullname = reader.GetString(1);
+            user.login = reader.GetString(2);
+            user.password = reader.GetString(3);
+            user.registrationDate = DateTime.Parse(reader.GetString(4));
+            user.role = reader.GetString(5);
             return user;
-        }
-
-        public int LogUser(string login, string password)
-        {
-            _connection.Open();
-            SqliteCommand command = _connection.CreateCommand();
-            command.CommandText = @"SELECT * FROM users WHERE login = $login";
-            command.Parameters.AddWithValue("$login", login);
-            SqliteDataReader reader = command.ExecuteReader();
-            
-
-            if(reader.Read() && reader.GetString(3) == password)
-            {
-                int id = int.Parse(reader.GetString(0));
-                _connection.Close();
-                return id;
-            }
-            _connection.Close();
-            return -1;
         }
 
         public bool ContainsLogin(string login)
@@ -243,6 +210,24 @@ namespace RepositoriesAndData
             }
             _connection.Close();
             return userFullName;
+        }
+
+        public bool ContainsRecord(int recordId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM users WHERE id = $id";
+            command.Parameters.AddWithValue("$id", recordId);
+            SqliteDataReader reader = command.ExecuteReader();
+
+            if(reader.Read())
+            {
+                _connection.Close();
+                return true;
+            }
+
+            _connection.Close();
+            return false;
         }
     }
 }

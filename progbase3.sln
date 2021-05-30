@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMLModule", "XMLModule\XMLM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autentification", "Autentification\Autentification.csproj", "{E8C8AB47-2D3D-4DB5-881E-A0AF15CFC301}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileGeneration", "FileGeneration\FileGeneration.csproj", "{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,5 +88,17 @@ Global
 		{E8C8AB47-2D3D-4DB5-881E-A0AF15CFC301}.Release|x64.Build.0 = Release|Any CPU
 		{E8C8AB47-2D3D-4DB5-881E-A0AF15CFC301}.Release|x86.ActiveCfg = Release|Any CPU
 		{E8C8AB47-2D3D-4DB5-881E-A0AF15CFC301}.Release|x86.Build.0 = Release|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Debug|x64.Build.0 = Debug|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Debug|x86.Build.0 = Debug|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Release|x64.ActiveCfg = Release|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Release|x64.Build.0 = Release|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Release|x86.ActiveCfg = Release|Any CPU
+		{6EAA41FC-2797-41ED-AFA3-5A96A5E56025}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

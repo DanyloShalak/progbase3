@@ -10,9 +10,9 @@ namespace XMLModule
     
     public class XML
     {
-        private CommentsRepository repository;
+        private PostRepository repository;
 
-        public XML(CommentsRepository repository)
+        public XML(PostRepository repository)
         {
             this.repository = repository;
         }
@@ -24,34 +24,34 @@ namespace XMLModule
 
         public void Serialise(User user, string saveFilePath)
         {
-            Comments comments = new Comments();
-            comments.comments =  this.repository.GetAllUserComments(user.id);
+            Posts posts = new Posts();
+            posts.posts =  this.repository.GetAllUserPosts(user.id);
             StreamWriter writer = new StreamWriter(saveFilePath);
-            XmlSerializer serializer = new XmlSerializer(typeof(Comments));
-            serializer.Serialize(writer, comments);
+            XmlSerializer serializer = new XmlSerializer(typeof(Posts));
+            serializer.Serialize(writer, posts);
             writer.Close();
         }
 
-        public List<Comment> Deserialise(string xmlFilePath)
+        public List<Post> Deserialise(string xmlFilePath)
         {
             if(!File.Exists(xmlFilePath))
             {
                 throw new Exception("File do not exists");
             }
 
-            Comments comments = new Comments();
+            Posts posts = new Posts();
             try
             {
                 StreamReader reader = new StreamReader(xmlFilePath);
-                XmlSerializer serializer = new XmlSerializer(typeof(Comments));
-                comments = (Comments)serializer.Deserialize(reader);
+                XmlSerializer serializer = new XmlSerializer(typeof(Posts));
+                posts = (Posts)serializer.Deserialize(reader);
                 reader.Close();
             }
             catch (Exception)
             {
                 throw new Exception("Icorrect file selected");
             }
-            return comments.comments;
+            return posts.posts;
         }
     }
 }
