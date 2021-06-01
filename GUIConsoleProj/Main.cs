@@ -17,6 +17,7 @@ namespace GUIConsoleProj
         static public  User loggedUser;
         public static Label username;
         private EntityType searchType = EntityType.Posts;
+        private TextField searchField;
         
         public Main(User user)
         {
@@ -31,6 +32,7 @@ namespace GUIConsoleProj
                 Y = Pos.Percent(3),
                 Width = Dim.Percent(20),
             };
+            username.Clicked += ShowLoggedUser;
             Button logOut = new Button("logOut")
             {
                 X = username.X + 2,
@@ -112,29 +114,28 @@ namespace GUIConsoleProj
             newPost.Clicked += OnNewPost;
             this.Add(newPost);
 
-            TextField searchField = new TextField()
+            this.searchField = new TextField()
             {
                 X = Pos.Percent(75),
                 Y = Pos.Percent(45),
                 Width = Dim.Percent(20),
             };
-            
 
             RadioGroup searchRadio = new RadioGroup(new NStack.ustring[]{"Posts", "Comments", "Users"}){
                 X = Pos.Percent(75),
                 Y = Pos.Percent(50),
             };
+            searchRadio.SelectedItemChanged += ChangeSearchType;
 
             Button search = new Button("search")
             {
                 X = Pos.Percent(78),
                 Y = Pos.Percent(60),
             };
+            search.Clicked += OnSearchButton;
 
             this.Add(searchField, searchRadio, search);
-
         }
-
 
 
         static void ChangeList(RadioGroup.SelectedItemChangedArgs args)
@@ -270,6 +271,37 @@ namespace GUIConsoleProj
             ImportWindow importWindow = new ImportWindow();
             importWindow.SetImportWindow();
             Application.Run(importWindow);
+        }
+
+        void OnSearchButton()
+        {
+            SearchWindow searchWindow = new SearchWindow(this.searchType, this.searchField.Text.ToString());
+            searchWindow.SetSearchDialog();
+            Application.Run(searchWindow);
+        }
+
+        void ChangeSearchType(RadioGroup.SelectedItemChangedArgs args)
+        {
+            int itemIndex = args.SelectedItem;
+            if(itemIndex == 0)
+            {
+                this.searchType = EntityType.Posts;
+            }
+            else if(itemIndex == 1)
+            {
+                this.searchType = EntityType.Comments;
+            }
+            else if(itemIndex == 2)
+            {
+                this.searchType = EntityType.Users;
+            }
+        }
+
+        void ShowLoggedUser()
+        {
+            UserView userView = new UserView(loggedUser);
+            userView.SetUserWindow();
+            Application.Run(userView);
         }
     }
 }

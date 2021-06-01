@@ -1,6 +1,7 @@
 using Terminal.Gui;
 using RepositoriesAndData;
 using FileGeneration;
+using System;
 
 
 namespace GUIConsoleProj
@@ -96,9 +97,16 @@ namespace GUIConsoleProj
         {
             if(this.fileNameTextField.Text != "" && this.filePathTextField.Text != "")
             {
-                Report.GenerateReport(user, this.filePathTextField.Text.ToString() + "\\" +
+                try
+                {
+                    Report.GenerateReport(user, this.filePathTextField.Text.ToString() + "\\" +
                      this.fileNameTextField.Text.ToString());
-                Application.RequestStop();
+                    Application.RequestStop();
+                }
+                catch (Exception)
+                {
+                    this.errorsMesage.Text = "Error: Could not generate report";
+                }
             }
             else
             {

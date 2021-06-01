@@ -14,7 +14,6 @@ namespace Autentification
             return hash;
         }
 
-
         private static string GetHash(HashAlgorithm hashAlgorithm, string input)
         {
             byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));

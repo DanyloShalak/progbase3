@@ -66,7 +66,7 @@ namespace RepositoriesAndData
             command.Parameters.AddWithValue("$id", id);
             int changes = command.ExecuteNonQuery();
             _connection.Close();
-            return changes == 1;
+            return changes >= 1;
         }
 
         public bool Update(Post post)
@@ -85,7 +85,7 @@ namespace RepositoriesAndData
             command.Parameters.AddWithValue("$is_attached", post.isAttached.ToString());
             int changes = command.ExecuteNonQuery();
             _connection.Close();
-            return changes == 1;
+            return changes > 0;
         }
 
         public List<Post> GetAllUserPosts(int userId)
@@ -168,6 +168,62 @@ namespace RepositoriesAndData
             command.Parameters.AddWithValue("$id", recordId);
             SqliteDataReader reader = command.ExecuteReader();
 
+            if(reader.Read())
+            {
+                _connection.Close();
+                return true;
+            }
+
+            _connection.Close();
+            return false;
+        }
+
+        public List<Post> SerchPostsLike(string searchText)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM posts WHERE post_text LIKE '%' || $value || '%'";
+            command.Parameters.AddWithValue("$value", searchText);
+            SqliteDataReader reader = command.ExecuteReader();
+            List<Post> posts = new List<Post>();
+
+            while(reader.Read())
+            {
+                posts.Add(new Post(int.Parse(reader.GetString(0)), 
+                    reader.GetString(1), int.Parse(reader.GetString(2)), DateTime.Parse(reader.GetString(3)),
+                    bool.Parse(reader.GetString(4))));
+            }
+            _connection.Close();
+            
+            return posts;
+        }
+
+        public int GetAuthorId(int postId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM posts WHERE id = $id";
+            command.Parameters.AddWithValue("$id", postId);
+            SqliteDataReader reader = command.ExecuteReader();
+            int authorId = -1;
+
+            if(reader.Read())
+            {
+                authorId = int.Parse(reader.GetString(2));
+            }
+            _connection.Close();
+            
+            return authorId;
+        }
+
+        public bool ExistById(int postId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM posts WHERE id = $id";
+            command.Parameters.AddWithValue("$id", postId);
+            SqliteDataReader reader = command.ExecuteReader();
+            
             if(reader.Read())
             {
                 _connection.Close();

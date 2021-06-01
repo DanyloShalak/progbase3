@@ -192,5 +192,61 @@ namespace RepositoriesAndData
             _connection.Close();
             return changes;
         }
+
+        public List<Comment> SerchCommentsLike(string searchText)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM comments WHERE comment_text LIKE '%' || $value || '%'";
+            command.Parameters.AddWithValue("$value", searchText);
+            SqliteDataReader reader = command.ExecuteReader();
+            List<Comment> comments = new List<Comment>();
+
+            while(reader.Read())
+            {
+                comments.Add(new Comment(int.Parse(reader.GetString(0)), reader.GetString(1),
+                        int.Parse(reader.GetString(2)), int.Parse(reader.GetString(3)),
+                        DateTime.Parse(reader.GetString(4))));
+            }
+            _connection.Close();
+            
+            return comments;
+        }
+
+        public int GetAuthorId(int commentId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM comments WHERE id = $id";
+            command.Parameters.AddWithValue("$id", commentId);
+            SqliteDataReader reader = command.ExecuteReader();
+            int authorId = -1;
+
+            if(reader.Read())
+            {
+                authorId = int.Parse(reader.GetString(2));
+            }
+            _connection.Close();
+            
+            return authorId;
+        }
+
+        public bool ExistById(int commentId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM comments WHERE id = $id";
+            command.Parameters.AddWithValue("$id", commentId);
+            SqliteDataReader reader = command.ExecuteReader();
+            
+            if(reader.Read())
+            {
+                _connection.Close();
+                return true;
+            }
+
+            _connection.Close();
+            return false;
+        }
     }
 }

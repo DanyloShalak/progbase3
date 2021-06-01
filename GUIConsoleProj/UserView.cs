@@ -96,7 +96,7 @@ namespace GUIConsoleProj
                 this.Add(update);
             }
 
-            if(Main.loggedUser.id == updateUser.id || Main.loggedUser.role == "moderator")
+            if(Main.loggedUser.role == "moderator")
             {
                 this.delete = new Button("delete")
                 {

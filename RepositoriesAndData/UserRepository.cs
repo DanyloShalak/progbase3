@@ -66,7 +66,7 @@ namespace RepositoriesAndData
             command.Parameters.AddWithValue("$id", id);
             int changes = command.ExecuteNonQuery();
             _connection.Close();
-            return changes == 1;
+            return changes > 0;
         }
 
         public bool Update(User user)
@@ -220,6 +220,43 @@ namespace RepositoriesAndData
             command.Parameters.AddWithValue("$id", recordId);
             SqliteDataReader reader = command.ExecuteReader();
 
+            if(reader.Read())
+            {
+                _connection.Close();
+                return true;
+            }
+
+            _connection.Close();
+            return false;
+        }
+
+        public List<User> SerchUsersLike(string searchText)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM users WHERE login LIKE '%' || $value || '%'";
+            command.Parameters.AddWithValue("$value", searchText);
+            SqliteDataReader reader = command.ExecuteReader();
+            List<User> users = new List<User>();
+
+            while(reader.Read())
+            {
+                User user = ReadUser(reader);
+                users.Add(user);
+            }
+            _connection.Close();
+            
+            return users;
+        }
+
+        public bool ExistById(int userId)
+        {
+            _connection.Open();
+            SqliteCommand command = _connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM users WHERE id = $id";
+            command.Parameters.AddWithValue("$id", userId);
+            SqliteDataReader reader = command.ExecuteReader();
+            
             if(reader.Read())
             {
                 _connection.Close();

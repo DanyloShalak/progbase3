@@ -99,9 +99,9 @@ namespace GUIConsoleProj
                     Application.RequestStop();
                     Main.UpdateList();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    this.errorsMesage.Text = ex.Message;
+                    this.errorsMesage.Text = "Wrong file selected";
                 }
 
             }
