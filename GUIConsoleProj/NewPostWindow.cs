@@ -50,7 +50,7 @@ namespace GUIConsoleProj
             if(index == 1)
             {
                 Post post = new Post(postText.Text.ToString(), Main.loggedUser.id, DateTime.Now, isAttached.Checked);
-                Program.postRepository.Add(post);
+                Program.remoteService.InsertPost(post);
                 Application.RequestStop();
                 Main.UpdateList();
             }

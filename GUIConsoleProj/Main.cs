@@ -81,7 +81,7 @@ namespace GUIConsoleProj
             };
             listWindow.Add(currentPage);
 
-            List<Post> list = Program.postRepository.GetPage(numberOfPage);
+            List<Post> list = Program.remoteService.GetPostPage(numberOfPage).posts;
             listView = new ListView(list){
                 X = Pos.Percent(10),
                 Y = Pos.Percent(10),
@@ -99,7 +99,7 @@ namespace GUIConsoleProj
             switchLists.SelectedItemChanged += ChangeList;
             listWindow.Add(switchLists);
             
-            aditionalData = new Label($"Current list: Posts  Total pages: {Program.postRepository.GetTotalPages()}"){
+            aditionalData = new Label($"Current list: Posts  Total pages: {Program.remoteService.GetTotalPostPages()}"){
                 X = switchLists.X,
                 Y = switchLists.Y + 4,
                 Width = Dim.Percent(80),
@@ -166,24 +166,24 @@ namespace GUIConsoleProj
             (string, int) tuple = ("", 0);
             if(type == EntityType.Posts)
             {
-                List<Post> list = Program.postRepository.GetPage(numberOfPage);
+                List<Post> list = Program.remoteService.GetPostPage(numberOfPage).posts;
                 listView.SetSource(list);
                 tuple.Item1 = "Posts";
-                tuple.Item2 = Program.postRepository.GetTotalPages();
+                tuple.Item2 = Program.remoteService.GetTotalPostPages();
             }
             else if(type == EntityType.Comments)
             {
-                List<Comment> list = Program.commentsRepository.GetPage(numberOfPage);
+                List<Comment> list = Program.remoteService.GetCommentsPage(numberOfPage).comments;
                 listView.SetSource(list);
                 tuple.Item1 = "Comments";
-                tuple.Item2 = Program.commentsRepository.GetTotalPages();
+                tuple.Item2 = Program.remoteService.GetTotalCommentPages();
             }
             else if(type == EntityType.Users)
             {
-                List<User> list = Program.usersRepository.GetPage(numberOfPage);
+                List<User> list = Program.remoteService.GetUsersPage(numberOfPage).users;
                 listView.SetSource(list);
                 tuple.Item1 = "Users";
-                tuple.Item2 = Program.usersRepository.GetTotalPages();
+                tuple.Item2 = Program.remoteService.GetTotalUserPages();
             }
             currentPage.Text = numberOfPage.ToString();
             aditionalData.Text = $"Current list: {tuple.Item1}  Total pages: {tuple.Item2}";
@@ -191,15 +191,15 @@ namespace GUIConsoleProj
 
         static void OnNext()
         {
-            if(type == EntityType.Users && numberOfPage < Program.usersRepository.GetTotalPages())
+            if(type == EntityType.Users && numberOfPage < Program.remoteService.GetTotalUserPages())
             {
                 OnUpdate(1);
             }
-            else if(type == EntityType.Posts && numberOfPage < Program.postRepository.GetTotalPages())
+            else if(type == EntityType.Posts && numberOfPage < Program.remoteService.GetTotalPostPages())
             {
                 OnUpdate(1);
             }
-            else if(type == EntityType.Comments && numberOfPage < Program.commentsRepository.GetTotalPages())
+            else if(type == EntityType.Comments && numberOfPage < Program.remoteService.GetTotalCommentPages())
             {
                 OnUpdate(1);
             }
@@ -229,7 +229,7 @@ namespace GUIConsoleProj
          public static void OnLogOut()
         {
             Application.RequestStop();
-            LogInWindow logInWindow = new LogInWindow("C:/Users/Данило/progbase3/data/database.db");
+            LogInWindow logInWindow = new LogInWindow();
             logInWindow.SetLogWindow();
             Application.Run(logInWindow);
         }

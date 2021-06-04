@@ -2,36 +2,40 @@
 using Terminal.Gui;
 using RepositoriesAndData;
 using System.IO;
+using System.Net.Sockets;
+using System.Net;
+using Service;
 
 namespace GUIConsoleProj
 {
     class Program
     {
-        public static UsersRepository usersRepository;
-        public static PostRepository postRepository;
-        public static CommentsRepository commentsRepository;
-        
+
+
+        public static RemoteService remoteService;
         static void Main(string[] args)
         {
-            string dbFilePath = "C:/Users/Данило/progbase3/data/database.db";
+            IPAddress ipAddress = IPAddress.Loopback;
+            int port = 3000;
 
+            Socket sender = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);  
+            IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+            Application.Init();
 
-            if(File.Exists(dbFilePath))
-            {
-                usersRepository = new UsersRepository(dbFilePath);
-                postRepository = new PostRepository(dbFilePath);
-                commentsRepository = new CommentsRepository(dbFilePath);
-
-                Application.Init();
-                LogInWindow log = new LogInWindow(dbFilePath);
+            
+                try
+                {
+                    sender.Connect(remoteEP);
+                    remoteService = new RemoteService(sender);
+                }
+                catch (Exception e) 
+                {
+                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
+                }
+                LogInWindow log = new LogInWindow();
                 log.SetLogWindow();
                 Application.Run(log);
-            }
-            else
-            {
-                Console.Error.WriteLine("Could not run program, because ");
-            }
-           
+
         }
     }
 }

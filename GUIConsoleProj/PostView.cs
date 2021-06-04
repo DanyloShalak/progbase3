@@ -28,7 +28,7 @@ namespace GUIConsoleProj
             this.Title = "Post";
             this.Height = Dim.Percent(70);
 
-            List<Comment> list = Program.commentsRepository.GetAllPostComments(updatePost.id);
+            List<Comment> list = Program.remoteService.GetAllPostComments(updatePost.id).comments;
             commentsView = new ListView(list){
                 X = Pos.Percent(15),
                 Y = Pos.Percent(50),
@@ -54,7 +54,7 @@ namespace GUIConsoleProj
                 Y = postText.Y + 3,
             };
 
-            Label author = new Label($"Author: {Program.usersRepository.GetFullNameById(updatePost.authorId)}"){
+            Label author = new Label($"Author: {Program.remoteService.GetAuthorName(updatePost.authorId)}"){
                 X = postText.X,
                 Y = isAttached.Y + 3,
             };
@@ -81,37 +81,31 @@ namespace GUIConsoleProj
             };
             this.comment.Clicked += OnComment;
 
+            this.editBtn = new Button("edit"){
+                X = back.X,
+                Y = back.Y + 7,
+                Visible = false,
+            };
+            this.editBtn.Clicked += OnEditWindow;
+            this.Add(editBtn);
+
             if(loggedUserId == updatePost.authorId)
             {
-                this.editBtn = new Button("edit"){
-                    X = back.X,
-                    Y = back.Y + 7,
-                };
-                this.editBtn.Clicked += OnEditWindow;
-                this.Add(editBtn);
+                this.editBtn.Visible = true;
             }
+
+            this.delete = new Button("delete"){
+            X = editBtn.X,
+            Y = editBtn.Y + 3,
+            Visible = false,
+            };
+            this.delete.Clicked += OnDelete;
+            this.Add(delete);
 
             if(loggedUserId == updatePost.authorId || role == "moderator")
             {
-                this.delete = new Button("delete"){
-                X = editBtn.X,
-                Y = editBtn.Y + 3,
-                };
-                this.delete.Clicked += OnDelete;
-                this.Add(delete);
+                this.delete.Visible = true;
             }
-
-            this.Add(postText, postLb, isAttached, author, createsAt, back, comment, commentsView, label);
-        }
-
-        void OnEditWindow()
-        {
-            this.isEditing = true;
-            postText.ReadOnly = false;
-            this.Remove(editBtn);
-            this.Remove(comment);
-            this.Remove(isAttached);
-            this.Remove(delete);
 
             saveChanges = new Button("Save Changes"){
                 X = 67,
@@ -125,6 +119,17 @@ namespace GUIConsoleProj
 
             this.Add(saveChanges, isAttach);
 
+            this.Add(postText, postLb, isAttached, author, createsAt, back, comment, commentsView, label);
+        }
+
+        void OnEditWindow()
+        {
+            this.isEditing = true;
+            postText.ReadOnly = false;
+            this.Remove(editBtn);
+            this.Remove(comment);
+            this.Remove(isAttached);
+            this.Remove(delete);
         }
 
         void OnSave()
@@ -138,7 +143,7 @@ namespace GUIConsoleProj
             this.postText.Text = updatePost.postText;
             this.isAttached.Text = "Attached:" + updatePost.isAttached.ToString();
             this.postText.ReadOnly = true;
-            Program.postRepository.Update(updatePost);
+            Program.remoteService.UpdatePost(updatePost);
             Main.UpdateList();
         }
 
@@ -171,8 +176,7 @@ namespace GUIConsoleProj
             int index = MessageBox.Query("Delete post", "Are you sure", "No", "Yes");
             if(index == 1)
             {
-                Program.postRepository.RemoveById(updatePost.id);
-                Program.commentsRepository.DeleteAllPostComments(updatePost.id);
+                Program.remoteService.DeletePost(updatePost.id);
                 Main.UpdateList();
                 Application.RequestStop();
             }

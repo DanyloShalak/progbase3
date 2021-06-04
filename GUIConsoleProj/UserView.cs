@@ -1,8 +1,8 @@
-using System;
 using Terminal.Gui;
 using RepositoriesAndData;
 using Autentification;
 using System.Collections.Generic;
+using System;
 
 namespace GUIConsoleProj
 {
@@ -96,18 +96,21 @@ namespace GUIConsoleProj
                 this.Add(update);
             }
 
-            if(Main.loggedUser.role == "moderator")
+            this.delete = new Button("delete")
             {
-                this.delete = new Button("delete")
-                {
-                    X = this.update.X,
-                    Y = this.update.Y + 3,
-                };
-                this.delete.Clicked += OnDelete;
-                this.Add(delete);
+                X = this.update.X,
+                Y = this.update.Y + 3,
+                Visible = false,
+            };
+            this.delete.Clicked += OnDelete;
+            this.Add(delete);
+
+            if(Main.loggedUser.role == "moderator" && Main.loggedUser.id != this.updateUser.id)
+            {
+                this.delete.Visible = true;
             }
 
-            this.postsView = new ListView(Program.postRepository.GetAllUserPosts(updateUser.id))
+            this.postsView = new ListView(Program.remoteService.GetAllUserPosts(this.updateUser.id).posts)
             {
                 X = Pos.Percent(15),
                 Y = Pos.Percent(60),
@@ -138,7 +141,7 @@ namespace GUIConsoleProj
 
         void OnReportButton()
         {
-            this.updateUser = Program.usersRepository.GetUserImageInformation(updateUser);
+            this.updateUser = Program.remoteService.GetImageUserData(updateUser);
             ReportWindow reportWindow = new ReportWindow(this.updateUser);
             reportWindow.SetReportWindow();
             Application.Run(reportWindow);
@@ -162,16 +165,16 @@ namespace GUIConsoleProj
 
             this.password = new TextField()
             {
-                X = 15,
-                Y = 14,
+                X = Pos.Percent(15),
+                Y = Pos.Percent(30),
                 Width = 25,
                 Secret = true,
             };
 
             this.pass = new Label("Password:")
             {
-                X = 15, 
-                Y = 13,
+                X = Pos.Percent(15), 
+                Y = password.Y - 1,
             };
 
             this.Add(saveChanges, password, pass);
@@ -200,12 +203,7 @@ namespace GUIConsoleProj
 
         void OnSaveChanges()
         {
-            if(Program.usersRepository.ContainsLogin(this.login.Text.ToString()) && 
-                    this.login.Text.ToString() != Main.loggedUser.login)
-            {
-                this.errorLabel.Text = $"User with login '{this.login.Text}' exists";
-            }
-            else
+            try
             {
                 this.Remove(saveChanges);
                 this.Remove(pass);
@@ -219,11 +217,16 @@ namespace GUIConsoleProj
 
                 this.updateUser.login = this.login.Text.ToString();
                 this.updateUser.fullname = this.fullname.Text.ToString();
-                Program.usersRepository.Update(this.updateUser);
+                Program.remoteService.UpdateUser(this.updateUser);
                 this.errorLabel.Text = " ";
                 this.login.ReadOnly = true;
                 this.fullname.ReadOnly = true;
                 Main.username.Text = updateUser.fullname;
+                Main.loggedUser = this.updateUser;
+            }
+            catch(Exception)
+            {
+                this.errorLabel.Text = $"User with login '{this.login.Text}' exists";
             }
         }
 
@@ -247,15 +250,7 @@ namespace GUIConsoleProj
             int resultButtonIndex = MessageBox.Query("Delete user", "Are you sure?", "No", "Yes");
             if(resultButtonIndex == 1)
             {
-                List<Post> posts = Program.postRepository.GetAllUserPosts(this.updateUser.id);
-                foreach(Post post in posts)
-                {
-                    Program.commentsRepository.DeleteAllPostComments(post.id);
-                }
-                Program.commentsRepository.DeleteAllUserComments(this.updateUser.id);
-                Program.postRepository.DeleteAllUserPosts(this.updateUser.id);
-                Program.usersRepository.RemoveById(this.updateUser.id);
-                int deletedUser = this.updateUser.id;
+                Program.remoteService.DeleteUser(this.updateUser.id);
                 Application.RequestStop();
             }
         }

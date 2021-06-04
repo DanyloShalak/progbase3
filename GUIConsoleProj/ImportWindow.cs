@@ -79,23 +79,12 @@ namespace GUIConsoleProj
             if(this.filePathTextField.Text != "")
             {
                 XML xml = new XML();
-                List<Post> posts = new List<Post>();
+                Posts posts = new Posts();
 
                 try
                 {
-                    posts = xml.Deserialise(this.filePathTextField.Text.ToString());
-                    int existingAuthor = Main.loggedUser.id;
-                    foreach(Post post in posts)
-                    {
-                        if(Program.postRepository.ContainsRecord(post.id))
-                        {
-                            if(!Program.usersRepository.ContainsRecord(post.authorId))
-                            {
-                                post.authorId = existingAuthor;
-                            }
-                            Program.postRepository.Add(post);
-                        }
-                    }
+                    posts.posts = xml.Deserialise(this.filePathTextField.Text.ToString());
+                    Program.remoteService.Import(posts);
                     Application.RequestStop();
                     Main.UpdateList();
                 }
@@ -103,7 +92,6 @@ namespace GUIConsoleProj
                 {
                     this.errorsMesage.Text = "Wrong file selected";
                 }
-
             }
             else
             {

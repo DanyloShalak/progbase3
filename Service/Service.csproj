@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RepositoriesAndData\RepositoriesAndData.csproj" />
+    <ProjectReference Include="..\XMLModule\XMLModule.csproj" />
     <ProjectReference Include="..\Autentification\Autentification.csproj" />
   </ItemGroup>
 

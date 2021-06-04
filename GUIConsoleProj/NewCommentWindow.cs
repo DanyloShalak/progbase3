@@ -60,9 +60,9 @@ namespace GUIConsoleProj
                 {
                     Comment comment = new Comment(this.commentTextField.Text.ToString(), Main.loggedUser.id,
                     PostView.updatePost.id, DateTime.Now);
-                    Program.commentsRepository.Add(comment);
+                    Program.remoteService.InsertComment(comment);
                     Application.RequestStop();
-                    PostView.commentsView.SetSource(Program.commentsRepository.GetAllPostComments(PostView.updatePost.id));
+                    PostView.commentsView.SetSource(Program.remoteService.GetAllPostComments(PostView.updatePost.id).comments);
                     Main.UpdateList();
                 }
                 

@@ -11,11 +11,7 @@ namespace GUIConsoleProj
         private TextField login;
         private TextField password;
         private Label logState;
-        private Autentificator autentificator;
-        public LogInWindow(string dbFilePath)
-        {
-            this.autentificator = new Autentificator(dbFilePath);
-        }
+
         public void SetLogWindow()
         {
             this.Title = "LogWindow";
@@ -80,18 +76,27 @@ namespace GUIConsoleProj
             Application.Run(main);
         }
 
-         void OnLogButton()
+        void OnLogButton()
         {
             if(this.login.Text != "" || this.password.Text != "")
             {
-                User user = autentificator.VerifyUser(this.login.Text.ToString(), this.password.Text.ToString());
+                User user = new User();
+                try
+                {
+                    user = Program.remoteService.Log(this.login.Text.ToString(), this.password.Text.ToString());
+                }
+                catch (Exception)
+                {
+                    this.logState.Text = "Incorrect entered login or password";
+                }
+
                 if(user != null)
                 {
                     RunMain(user);
                 }
                 else
                 {
-                    this.logState.Text = "Incorrect entered login or password";
+                    this.logState.Text = "Incorect entered lodin or password";
                 }
             }
             else
@@ -102,7 +107,7 @@ namespace GUIConsoleProj
 
          void OnRegistration()
         {
-            RegistrationWindow registrationWindow = new RegistrationWindow(this.autentificator);
+            RegistrationWindow registrationWindow = new RegistrationWindow();
             registrationWindow.FillRegistrationWindow();
             Application.Run(registrationWindow);
         }

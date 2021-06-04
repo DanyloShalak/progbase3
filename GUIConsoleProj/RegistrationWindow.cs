@@ -12,12 +12,6 @@ namespace GUIConsoleProj
         private TextField fullname;
         private TextField password;
         private Label errorLb;
-        private Autentificator autentificator;
-
-        public RegistrationWindow(Autentificator autentificator)
-        {
-            this.autentificator = autentificator;
-        }
         
         public  void FillRegistrationWindow()
         {
@@ -63,28 +57,26 @@ namespace GUIConsoleProj
             back.Clicked += Application.RequestStop;
 
             this.Add(password, fullname, login, registrate, back, errorLb);
-
-
         }
 
         void OnRegistration()
         {
             if(this.fullname.Text != "" || this.password.Text != "")
             {
-                if(this.autentificator.ContainsLogin(this.login.ToString()))
-                {
-                    this.errorLb.Text = $"User with login '{this.login.Text}' exists";
-                }
-                else
+                try
                 {
                     User user = new User();
                     user.login = this.login.Text.ToString();
                     user.fullname = this.fullname.Text.ToString();
-                    user.password = Hasher.GetHashedPassword(this.password.Text.ToString());
+                    user.password = this.password.Text.ToString();
                     user.registrationDate = DateTime.Now;
                     user.role = "user";
-                    user.id = Program.usersRepository.Add(user);
+                    Program.remoteService.RegistrateUser(user);
                     Application.RequestStop();
+                }
+                catch(Exception)
+                {
+                    this.errorLb.Text = $"User with login '{this.login.Text}' exists";
                 }
             }
             else
@@ -92,6 +84,5 @@ namespace GUIConsoleProj
                 this.errorLb.Text = "Entered not all data";
             }
         }
-
     }
 }

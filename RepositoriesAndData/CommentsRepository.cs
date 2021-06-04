@@ -76,12 +76,10 @@ namespace RepositoriesAndData
             command.CommandText = 
             @"
             UPDATE comments
-            SET comment_text = $comment_text, author_id = $author_id, post_id = $post_id
+            SET comment_text = $comment_text
             WHERE id = $id
             ";
             command.Parameters.AddWithValue("$comment_text",comment.commentText);
-            command.Parameters.AddWithValue("$author_id", comment.authorId);
-            command.Parameters.AddWithValue("$id", comment.id);
             command.Parameters.AddWithValue("$post_id", comment.postId);
             int changes = command.ExecuteNonQuery();
             _connection.Close();

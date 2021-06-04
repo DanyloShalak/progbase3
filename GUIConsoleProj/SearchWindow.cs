@@ -48,17 +48,17 @@ namespace GUIConsoleProj
         {
             if(this.type == EntityType.Posts)
             {
-                List<Post> list = Program.postRepository.SerchPostsLike(this.searchParameter);
+                List<Post> list = Program.remoteService.GetPostsSearchResult(this.searchParameter).posts;
                 this.SetList<Post>(list);
             }
             else if(this.type == EntityType.Comments)
             {
-                List<Comment> comments = Program.commentsRepository.SerchCommentsLike(this.searchParameter);
+                List<Comment> comments = Program.remoteService.GetCommentsSearchResult(this.searchParameter).comments;
                 this.SetList<Comment>(comments);
             }
             else if(this.type == EntityType.Users)
             {
-                List<User> users = Program.usersRepository.SerchUsersLike(this.searchParameter);
+                List<User> users = Program.remoteService.GetUsersSearchResult(this.searchParameter).users;
                 this.SetList<User>(users);
             }
         }

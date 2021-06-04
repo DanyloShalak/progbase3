@@ -37,7 +37,7 @@ namespace GUIConsoleProj
                 Y = commentText.Y - 1,
             };
 
-            Label author = new Label($"Author: {Program.usersRepository.GetFullNameById(updateComment.authorId)}"){
+            Label author = new Label($"Author: {Program.remoteService.GetAuthorName(updateComment.authorId)}"){
                 X = commentText.X,
                 Y = commentText.Y + 4,
             };
@@ -110,7 +110,7 @@ namespace GUIConsoleProj
             this.Add(editBtn, delete);
             this.commentText.Text = updateComment.commentText;
             this.commentText.ReadOnly = true;
-            Program.commentsRepository.Update(updateComment);
+            Program.remoteService.UpdateComment(updateComment);
             Main.UpdateList();
         }
 
@@ -135,11 +135,12 @@ namespace GUIConsoleProj
             int index = MessageBox.Query("Delete post", "Are you sure", "No", "Yes");
             if(index == 1)
             {
-                Program.commentsRepository.RemoveById(updateComment.id);
+                Program.remoteService.DeleteComment(updateComment.id);
                 Main.UpdateList();
                 if(this.isPostView)
                 {
-                    PostView.commentsView.SetSource(Program.commentsRepository.GetAllPostComments(PostView.updatePost.id));
+                    PostView.commentsView.SetSource
+                        (Program.remoteService.GetAllPostComments(PostView.updatePost.id).comments);
                 }
                 Application.RequestStop();
             }

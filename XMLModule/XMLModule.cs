@@ -11,21 +11,8 @@ namespace XMLModule
     public class XML
     {
         private PostRepository repository;
-
-        public XML(PostRepository repository)
+        public void Serialise(Posts posts, string saveFilePath)
         {
-            this.repository = repository;
-        }
-
-        public XML()
-        {
-
-        }
-
-        public void Serialise(User user, string saveFilePath)
-        {
-            Posts posts = new Posts();
-            posts.posts =  this.repository.GetAllUserPosts(user.id);
             StreamWriter writer = new StreamWriter(saveFilePath);
             XmlSerializer serializer = new XmlSerializer(typeof(Posts));
             serializer.Serialize(writer, posts);

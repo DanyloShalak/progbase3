@@ -76,11 +76,10 @@ namespace RepositoriesAndData
             command.CommandText = 
             @"
             UPDATE posts
-            SET post_text = $post_text, author_id = $author_id, is_attached = $is_attached
+            SET post_text = $post_text, is_attached = $is_attached
             WHERE id = $id
             ";
             command.Parameters.AddWithValue("$post_text",post.postText);
-            command.Parameters.AddWithValue("$author_id", post.authorId);
             command.Parameters.AddWithValue("$id", post.id);
             command.Parameters.AddWithValue("$is_attached", post.isAttached.ToString());
             int changes = command.ExecuteNonQuery();

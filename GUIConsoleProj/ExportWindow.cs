@@ -98,8 +98,10 @@ namespace GUIConsoleProj
         {
             if(this.fileNameTextField.Text != "" && this.filePathTextField.Text != "")
             {
-                XML xml = new XML(Program.postRepository);
-                xml.Serialise(this.user, this.filePathTextField.Text.ToString() + "\\" + this.fileNameTextField.Text.ToString());
+                Posts posts = Program.remoteService.GetAllUserPosts(this.user.id);
+                XML xml = new XML();
+                xml.Serialise(posts, this.filePathTextField.Text.ToString() + "\\" +
+                     this.fileNameTextField.Text.ToString());
                 Application.RequestStop();
             }
             else
