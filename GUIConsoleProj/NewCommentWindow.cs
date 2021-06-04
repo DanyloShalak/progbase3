@@ -42,8 +42,6 @@ namespace GUIConsoleProj
                 Y = Pos.Percent(40),
                 Width = Dim.Percent(70),
             };
-
-
             this.Add(back, comment, this.commentTextField, this.errorLable, label);
         }
 
@@ -55,7 +53,7 @@ namespace GUIConsoleProj
             }
             else
             {
-                int index = MessageBox.Query("New post", "Are you sure", "No", "Yes");
+                int index = MessageBox.Query("New comment", "Are you sure", "No", "Yes");
                 if(index == 1)
                 {
                     Comment comment = new Comment(this.commentTextField.Text.ToString(), Main.loggedUser.id,

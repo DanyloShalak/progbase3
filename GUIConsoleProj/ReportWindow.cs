@@ -56,7 +56,7 @@ namespace GUIConsoleProj
             };
             back.Clicked += Application.RequestStop;
 
-            Button export = new Button("export")
+            Button export = new Button("report")
             {
                 X = Pos.Percent(60),
                 Y = Pos.Percent(80),

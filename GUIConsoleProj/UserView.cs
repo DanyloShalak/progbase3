@@ -85,15 +85,18 @@ namespace GUIConsoleProj
             };
             back.Clicked += OnBack;
 
+            this.update = new Button("update")
+            {
+                X = back.X,
+                Y = back.Y + 3,
+                Visible = false,
+            };
+            this.update.Clicked += OnUpdateButton;
+            this.Add(update);
+
             if(Main.loggedUser.id == updateUser.id)
             {
-                this.update = new Button("update")
-                {
-                    X = back.X,
-                    Y = back.Y + 3,
-                };
-                this.update.Clicked += OnUpdateButton;
-                this.Add(update);
+                this.update.Visible = true;
             }
 
             this.delete = new Button("delete")
@@ -136,6 +139,27 @@ namespace GUIConsoleProj
             };
             report.Clicked += OnReportButton;
 
+            this.saveChanges = new Button("Save changes")
+            {
+                X = 65,
+                Y = 19,
+            };
+            saveChanges.Clicked += OnSaveChanges;
+
+            this.password = new TextField()
+            {
+                X = 15,
+                Y = 14,
+                Width = 25,
+                Secret = true,
+            };
+
+            this.pass = new Label("Password:")
+            {
+                X = 15, 
+                Y = 13,
+            };
+
             this.Add(exportBtn, report);
         }
 
@@ -155,27 +179,6 @@ namespace GUIConsoleProj
             this.Remove(postsView);
             this.login.ReadOnly = false;
             this.fullname.ReadOnly = false;
-
-            this.saveChanges = new Button("Save changes")
-            {
-                X = 65,
-                Y = 19,
-            };
-            saveChanges.Clicked += OnSaveChanges;
-
-            this.password = new TextField()
-            {
-                X = Pos.Percent(15),
-                Y = Pos.Percent(30),
-                Width = 25,
-                Secret = true,
-            };
-
-            this.pass = new Label("Password:")
-            {
-                X = Pos.Percent(15), 
-                Y = password.Y - 1,
-            };
 
             this.Add(saveChanges, password, pass);
         }

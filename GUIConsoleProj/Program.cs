@@ -22,19 +22,20 @@ namespace GUIConsoleProj
             IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
             Application.Init();
 
-            
+
                 try
                 {
                     sender.Connect(remoteEP);
                     remoteService = new RemoteService(sender);
+                    LogInWindow log = new LogInWindow();
+                    log.SetLogWindow();
+                    Application.Run(log);
                 }
-                catch (Exception e) 
+                catch (Exception) 
                 {
-                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
+                    MessageBox.Query("Error", "Could not connect to service", "Ok");
+                    Environment.Exit(232);
                 }
-                LogInWindow log = new LogInWindow();
-                log.SetLogWindow();
-                Application.Run(log);
 
         }
     }

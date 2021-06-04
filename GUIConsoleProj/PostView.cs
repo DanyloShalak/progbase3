@@ -71,7 +71,7 @@ namespace GUIConsoleProj
 
             Button back = new Button("back"){
                 X = Pos.Percent(70),
-                Y = postText.Y + 3,
+                Y = Pos.Percent(10) + 2,
             };
             back.Clicked += OnBack;
 
@@ -102,14 +102,14 @@ namespace GUIConsoleProj
             this.delete.Clicked += OnDelete;
             this.Add(delete);
 
-            if(loggedUserId == updatePost.authorId || role == "moderator")
+            if(loggedUserId != updatePost.authorId || role == "moderator")
             {
                 this.delete.Visible = true;
             }
 
             saveChanges = new Button("Save Changes"){
-                X = 67,
-                Y = 13,
+                X = delete.X,
+                Y = delete.Y + 3,
             };
             saveChanges.Clicked += OnSave;
             isAttach = new CheckBox("attach", updatePost.isAttached){
@@ -117,7 +117,7 @@ namespace GUIConsoleProj
                 Y = 6,
             };
 
-            this.Add(saveChanges, isAttach);
+            this.Add(isAttach);
 
             this.Add(postText, postLb, isAttached, author, createsAt, back, comment, commentsView, label);
         }
