@@ -99,14 +99,13 @@ namespace GUIConsoleProj
             this.delete = new Button("delete"){
             X = editBtn.X,
             Y = editBtn.Y + 3,
-            Visible = false,
+            Visible = true,
             };
             this.delete.Clicked += OnDelete;
-            this.Add(delete);
 
-            if(loggedUserId != updatePost.authorId || role == "moderator")
+            if(loggedUserId == updatePost.authorId || role == "moderator")
             {
-                this.delete.Visible = true;
+                this.Add(delete);
             }
 
             saveChanges = new Button("Save Changes"){
@@ -145,7 +144,11 @@ namespace GUIConsoleProj
 
         void OnSave()
         {
-            if(postText.ToString() != "")
+            if(this.postText.Text.ToString() == "")
+            {
+                this.errorLb.Text = "Post can not be empty";
+            }
+            else
             {
                 updatePost.postText = postText.Text.ToString();
                 updatePost.isAttached = isAttach.Checked;
@@ -158,10 +161,6 @@ namespace GUIConsoleProj
                 this.postText.ReadOnly = true;
                 Program.remoteService.UpdatePost(updatePost);
                 Main.UpdateList();
-            }
-            else
-            {
-                this.errorLb.Text = "Post can not be empty";
             }
         }
 

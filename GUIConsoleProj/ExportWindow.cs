@@ -68,6 +68,7 @@ namespace GUIConsoleProj
             {
                 X = Pos.Percent(30),
                 Y = Pos.Percent(70),
+                Width = Dim.Percent(50),
             };
 
             Button setFilePath = new Button("...")

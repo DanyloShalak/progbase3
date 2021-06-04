@@ -78,6 +78,7 @@ namespace GUIConsoleProj
             currentPage = new Label("1"){
                 X = Pos.Percent(50),
                 Y = Pos.Percent(5),
+                Width = 5,
             };
             listWindow.Add(currentPage);
 

@@ -23,19 +23,19 @@ namespace GUIConsoleProj
             Application.Init();
 
 
-                // try
-                // {
+                try
+                {
                     sender.Connect(remoteEP);
                     remoteService = new RemoteService(sender);
                     LogInWindow log = new LogInWindow();
                     log.SetLogWindow();
                     Application.Run(log);
-                // }
-                // catch (Exception) 
-                // {
-                //     MessageBox.Query("Error", "Could not connect to service", "Ok");
-                //     Environment.Exit(232);
-                // }
+                }
+                catch (Exception) 
+                {
+                    MessageBox.Query("Error", "Could not connect to service", "Ok");
+                    Environment.Exit(232);
+                }
 
         }
     }
