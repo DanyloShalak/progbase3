@@ -13,17 +13,17 @@ namespace FileGeneration
         public static void GenerateReport(User user, string saveFilePath)
         {
             Dictionary<string, string> dict = GetReportData(user);
-            XElement root = XElement.Load("C:/Users/Данило/progbase3/data/template/word/document.xml");
+            XElement root = XElement.Load("../data/template/word/document.xml");
             FindAndReplace(root, dict);
-            root.Save("C:/Users/Данило/progbase3/data/template/word/document.xml", SaveOptions.DisableFormatting);
-            File.Delete("C:/Users/Данило/progbase3/data/template/word/media/image1.png");
-            Image.GenerateImage(user, "C:/Users/Данило/progbase3/data/template/word/media/image1.png");
+            root.Save("../data/template/word/document.xml", SaveOptions.DisableFormatting);
+            File.Delete("../data/template/word/media/image1.png");
+            Image.GenerateImage(user, "../data/template/word/media/image1.png");
             
-            string startPath = @"C:/Users/Данило/progbase3/data/template";
+            string startPath = @"../data/template";
             ZipFile.CreateFromDirectory(startPath, saveFilePath);
-            File.Delete("C:/Users/Данило/progbase3/data/template/word/document.xml");
-            File.Copy("C:/Users/Данило/progbase3/data/temp/document.xml", 
-                "C:/Users/Данило/progbase3/data/template/word/document.xml");
+            File.Delete("../data/template/word/document.xml");
+            File.Copy("../data/temp/document.xml", 
+                "../data/template/word/document.xml");
         }
 
         private static Dictionary<string, string> GetReportData(User user)

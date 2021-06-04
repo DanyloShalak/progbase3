@@ -8,7 +8,7 @@ namespace Server
 {
     class Program
     {
-        static string dbFilePath = "C:/Users/Данило/progbase3/data/database.db";
+        static string dbFilePath = "../data/database.db";
         static void Main(string[] args)
         {
             IPAddress ipAddress = IPAddress.Loopback;
@@ -33,6 +33,11 @@ namespace Server
                         Thread thread = new Thread(StartNewTread);
                         thread.Start(clientSocket);
                     }
+                    else
+                    {
+                        Console.Error.WriteLine("Could not find database");
+                        break;
+                    }
                 }
             }
             catch (Exception ex)
@@ -46,7 +51,7 @@ namespace Server
             try
             {
                 Socket socket = (Socket)obj;
-                ServerService service = new ServerService("C:/Users/Данило/progbase3/data/database.db");
+                ServerService service = new ServerService(dbFilePath);
                 UIService uiService = new UIService(socket, service);
                 uiService.OnService();
             }

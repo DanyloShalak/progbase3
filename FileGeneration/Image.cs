@@ -20,7 +20,7 @@ namespace FileGeneration
             plt.AddScatter(hist.bins, hist.countsFracCurve, Color.Black, lineWidth: 2, markerSize: 0);
             plt.Title(user.fullname);
             plt.YLabel("Frequency (fraction)");
-            plt.XLabel("Value (units)");
+            plt.XLabel("Comments");
             plt.SetAxisLimits(null, null, 0, null);
             plt.Grid(lineStyle: LineStyle.Dot);
             plt.SaveFig(saveFilePath);
@@ -28,13 +28,14 @@ namespace FileGeneration
 
         private static double[] GetHistogramInfo(User user)
         {
-            double[] histInfo = new double[user.posts.Count];
-
+            double[] histInfo = new double[user.posts.Count + 1];
+            Random rand = new Random();
+            
             for(int i = 0; i < user.posts.Count; i++)
             {
-                histInfo[i] = user.posts[i].comments.Count;
+                histInfo[i + 1] = user.posts[i].comments.Count;
             }
-
+            histInfo[0] = rand.Next((int)histInfo.Min(), (int)histInfo.Max() + 1);
             return histInfo;
         }
 
