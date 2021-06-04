@@ -96,7 +96,7 @@ namespace GUIConsoleProj
                 }
                 else
                 {
-                    this.logState.Text = "Incorect entered lodin or password";
+                    this.logState.Text = "Incorect entered login or password";
                 }
             }
             else

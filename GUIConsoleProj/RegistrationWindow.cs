@@ -61,7 +61,8 @@ namespace GUIConsoleProj
 
         void OnRegistration()
         {
-            if(this.fullname.Text != "" || this.password.Text != "")
+            if(this.fullname.Text.ToString() != "" && this.password.Text.ToString() != ""
+                 && this.login.Text.ToString() != "")
             {
                 try
                 {

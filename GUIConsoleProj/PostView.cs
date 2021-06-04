@@ -19,6 +19,8 @@ namespace GUIConsoleProj
         public static ListView commentsView;
         private Button delete;
 
+        private Label errorLb;
+
         public PostView(Post post)
         {
             updatePost = post;
@@ -110,6 +112,7 @@ namespace GUIConsoleProj
             saveChanges = new Button("Save Changes"){
                 X = delete.X,
                 Y = delete.Y + 3,
+                Visible = false,
             };
             saveChanges.Clicked += OnSave;
             isAttach = new CheckBox("attach", updatePost.isAttached){
@@ -117,13 +120,21 @@ namespace GUIConsoleProj
                 Y = 6,
             };
 
-            this.Add(isAttach);
+            errorLb = new Label(" ")
+            {
+                X = Pos.Percent(30),
+                Y = Pos.Percent(95),
+                Width = Dim.Percent(60),
+            };
+
+            this.Add(isAttach, errorLb, saveChanges);
 
             this.Add(postText, postLb, isAttached, author, createsAt, back, comment, commentsView, label);
         }
 
         void OnEditWindow()
         {
+            this.saveChanges.Visible = true;
             this.isEditing = true;
             postText.ReadOnly = false;
             this.Remove(editBtn);
@@ -134,17 +145,24 @@ namespace GUIConsoleProj
 
         void OnSave()
         {
-            updatePost.postText = postText.Text.ToString();
-            updatePost.isAttached = isAttach.Checked;
-            this.isEditing = false;
-            this.Remove(saveChanges);
-            this.Remove(isAttach);
-            this.Add(editBtn, comment, isAttached, delete);
-            this.postText.Text = updatePost.postText;
-            this.isAttached.Text = "Attached:" + updatePost.isAttached.ToString();
-            this.postText.ReadOnly = true;
-            Program.remoteService.UpdatePost(updatePost);
-            Main.UpdateList();
+            if(postText.ToString() != "")
+            {
+                updatePost.postText = postText.Text.ToString();
+                updatePost.isAttached = isAttach.Checked;
+                this.isEditing = false;
+                this.saveChanges.Visible = false;
+                this.Remove(isAttach);
+                this.Add(editBtn, comment, isAttached, delete);
+                this.postText.Text = updatePost.postText;
+                this.isAttached.Text = "Attached:" + updatePost.isAttached.ToString();
+                this.postText.ReadOnly = true;
+                Program.remoteService.UpdatePost(updatePost);
+                Main.UpdateList();
+            }
+            else
+            {
+                this.errorLb.Text = "Post can not be empty";
+            }
         }
 
         void OnBack()
@@ -155,8 +173,9 @@ namespace GUIConsoleProj
             }
             else
             {
+                this.errorLb.Text = " ";
                 isEditing = false;
-                this.Remove(this.saveChanges);
+                this.saveChanges.Visible = false;
                 this.Remove(this.isAttach);
                 this.Add(this.editBtn, this.comment, this.isAttached);
                 this.postText.Text = updatePost.postText;

@@ -206,30 +206,40 @@ namespace GUIConsoleProj
 
         void OnSaveChanges()
         {
-            try
+            if(this.login.Text.ToString() != "" && this.fullname.Text.ToString() != "")
             {
-                this.Remove(saveChanges);
-                this.Remove(pass);
-                this.Remove(password);
-                this.Add(delete, update, postsView);
-
-                if(password.Text.ToString().Length != 0)
+                try
                 {
-                    this.updateUser.password = Hasher.GetHashedPassword(this.password.Text.ToString());
-                }
+                    if(password.Text.ToString().Length != 0)
+                    {
+                        this.updateUser.password = Hasher.GetHashedPassword(this.password.Text.ToString());
+                    }
 
-                this.updateUser.login = this.login.Text.ToString();
-                this.updateUser.fullname = this.fullname.Text.ToString();
-                Program.remoteService.UpdateUser(this.updateUser);
-                this.errorLabel.Text = " ";
-                this.login.ReadOnly = true;
-                this.fullname.ReadOnly = true;
-                Main.username.Text = updateUser.fullname;
-                Main.loggedUser = this.updateUser;
+                    this.updateUser.login = this.login.Text.ToString();
+                    this.updateUser.fullname = this.fullname.Text.ToString();
+
+                    Program.remoteService.UpdateUser(this.updateUser);
+
+                    this.Remove(saveChanges);
+                    this.Remove(pass);
+                    this.Remove(password);
+                    this.Add(delete, update, postsView);
+
+
+                    this.errorLabel.Text = " ";
+                    this.login.ReadOnly = true;
+                    this.fullname.ReadOnly = true;
+                    Main.username.Text = updateUser.fullname;
+                    Main.loggedUser = this.updateUser;
+                }
+                catch(Exception)
+                {
+                    this.errorLabel.Text = $"User with login '{this.login.Text}' exists";
+                }
             }
-            catch(Exception)
+            else
             {
-                this.errorLabel.Text = $"User with login '{this.login.Text}' exists";
+                this.errorLabel.Text = $"Error: You have empty field";
             }
         }
 

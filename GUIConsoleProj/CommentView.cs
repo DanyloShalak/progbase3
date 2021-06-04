@@ -14,6 +14,7 @@ namespace GUIConsoleProj
         private Button editBtn;
         private Button saveChanges;
         private Button delete;
+        private Label errorLb;
         public CommentView(Comment comment)
         {
             updateComment = comment;
@@ -70,17 +71,27 @@ namespace GUIConsoleProj
                 Width = Dim.Percent(70),
                 Height = 2,
                 ReadOnly = true,
-            };
+                };
             }
+
+            this.delete = new Button("delete"){
+            X = back.X,
+            Y = back.Y + 4,
+            Visible = false,
+            };
+            this.delete.Clicked += OnDelete;
+
+            this.errorLb = new Label(" ")
+            {
+                X = Pos.Percent(25),
+                Y = Pos.Percent(65),
+                Width = Dim.Percent(60),
+            };
+            this.Add(delete, errorLb);
 
             if(loggedUserId == updateComment.authorId || role == "moderator")
             {
-                this.delete = new Button("delete"){
-                X = back.X,
-                Y = back.Y + 4,
-                };
-                this.delete.Clicked += OnDelete;
-                this.Add(delete);
+                this.delete.Visible = true;
             }
 
             this.Add(postLb, author, createsAt, back,commentText);
@@ -104,14 +115,22 @@ namespace GUIConsoleProj
 
         void OnSave()
         {
-            updateComment.commentText = commentText.Text.ToString();
-            this.isEditing = false;
-            this.Remove(saveChanges);
-            this.Add(editBtn, delete);
-            this.commentText.Text = updateComment.commentText;
-            this.commentText.ReadOnly = true;
-            Program.remoteService.UpdateComment(updateComment);
-            Main.UpdateList();
+            if(commentText.Text.ToString() != "")
+            {
+                updateComment.commentText = commentText.Text.ToString();
+                this.isEditing = false;
+                this.Remove(saveChanges);
+                this.Add(editBtn, delete);
+                this.commentText.Text = updateComment.commentText;
+                this.commentText.ReadOnly = true;
+                Program.remoteService.UpdateComment(updateComment);
+                Main.UpdateList();
+                this.errorLb.Text = " ";
+            }
+            else
+            {
+                this.errorLb.Text = "Comment can not be empty";
+            }
         }
 
         void OnBack()
@@ -127,6 +146,7 @@ namespace GUIConsoleProj
                 this.Add(this.editBtn, this.delete);
                 this.commentText.Text = updateComment.commentText;
                 this.commentText.ReadOnly = true;
+                this.errorLb.Text = " ";
             }
         }
 

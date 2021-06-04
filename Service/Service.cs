@@ -173,6 +173,13 @@ namespace Service
                 throw new Exception("Error: You can not change information about other users");
             }
 
+            Autentificator autentificator = new Autentificator(this.dbFilePath);
+            User check = this._userRep.GetById(user.id);
+            if(autentificator.ContainsLogin(user.login) && user.login != check.login)
+            {   
+                throw new Exception($"User with login '{user.login}' already exists");
+            }
+
             if(user.password.Length < 30)
             {
                 user.password = Hasher.GetHashedPassword(user.password);
@@ -200,7 +207,7 @@ namespace Service
             this.VerificateComment(comment.id);
 
 
-            if(this.loggedUser.id != comment.id)
+            if(this.loggedUser.id != comment.authorId)
             {
                 throw new Exception("Error: You can not change information about not your comment");
             }

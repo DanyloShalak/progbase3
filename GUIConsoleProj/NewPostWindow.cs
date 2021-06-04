@@ -10,6 +10,7 @@ namespace GUIConsoleProj
     {
         static TextField postText;
         static CheckBox isAttached;
+        static Label errorLb;
 
         public void SetNewPostWindow()
         {
@@ -34,6 +35,12 @@ namespace GUIConsoleProj
                 X = Pos.Percent(30),
                 Y = Pos.Percent(60),
             };
+            errorLb = new Label(" ")
+            {
+                 X = Pos.Percent(35),
+                Y = Pos.Percent(50),
+                Width = Dim.Percent(65),
+            };
             back.Clicked += Application.RequestStop;
             Button publish = new Button("publish"){
                 X = Pos.Percent(70),
@@ -41,19 +48,27 @@ namespace GUIConsoleProj
             };
             publish.Clicked += OnConfirmation;
 
-            this.Add(isAttached, postLb, postText, back, publish);
+            this.Add(isAttached, postLb, postText, back, publish, errorLb);
         }
 
-        static void OnConfirmation()
+         void OnConfirmation()
         {
-            int index = MessageBox.Query("New post", "Are you sure", "No", "Yes");
-            if(index == 1)
+            if(postText.Text.ToString() != "")
             {
-                Post post = new Post(postText.Text.ToString(), Main.loggedUser.id, DateTime.Now, isAttached.Checked);
-                Program.remoteService.InsertPost(post);
-                Application.RequestStop();
-                Main.UpdateList();
+                int index = MessageBox.Query("New post", "Are you sure", "No", "Yes");
+                if(index == 1)
+                {
+                    Post post = new Post(postText.Text.ToString(), Main.loggedUser.id, DateTime.Now, isAttached.Checked);
+                    Program.remoteService.InsertPost(post);
+                    Application.RequestStop();
+                    Main.UpdateList();
+                }
             }
+            else
+            {
+                errorLb.Text = "Post can not be empty";
+            }
+            
         }
     }
 }

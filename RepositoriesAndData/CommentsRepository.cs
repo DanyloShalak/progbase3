@@ -80,7 +80,7 @@ namespace RepositoriesAndData
             WHERE id = $id
             ";
             command.Parameters.AddWithValue("$comment_text",comment.commentText);
-            command.Parameters.AddWithValue("$post_id", comment.postId);
+            command.Parameters.AddWithValue("$id", comment.id);
             int changes = command.ExecuteNonQuery();
             _connection.Close();
             return changes >= 1;

@@ -37,10 +37,10 @@ namespace GUIConsoleProj
                 X = Pos.Percent(30),
                 Y = commentTextField.Y - 1,
             };
-            this.errorLable = new Label(""){
+            this.errorLable = new Label(" "){
                 X = Pos.Percent(10),
                 Y = Pos.Percent(40),
-                Width = Dim.Percent(70),
+                Width = Dim.Percent(90),
             };
             this.Add(back, comment, this.commentTextField, this.errorLable, label);
         }
